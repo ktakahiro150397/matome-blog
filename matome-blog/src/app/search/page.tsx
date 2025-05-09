@@ -37,7 +37,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           posts={posts} 
           currentPage={page} 
           totalPages={totalPages} 
-          baseUrl={`/search?q=${encodeURIComponent(query)}`} 
+          baseUrl={`/search?q=${encodeURIComponent(query)}`}
+          showPagerTop={true}
+          showPagerBottom={true}
         />
       ) : (
         <div className="text-center p-12 border border-gray-200 dark:border-gray-800 rounded-lg">
