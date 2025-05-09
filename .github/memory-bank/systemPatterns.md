@@ -6,13 +6,15 @@
 ├── app/               # Next.js app router pages
 ├── components/        # React components
 │   ├── ui/           # shadcn/ui components
+│   ├── layout/       # Layout components
 │   └── blog/         # Blog specific components
 ├── content/          # MDX blog posts
 ├── lib/              # Utility functions
 │   ├── db/          # Database related code
 │   └── mdx/         # MDX processing
-├── public/           # Static assets
-└── styles/          # Global styles
+├── prisma/          # Database schema and migrations
+├── public/          # Static assets
+└── scripts/         # Utility scripts
 ```
 
 ## Core Patterns
@@ -64,15 +66,26 @@ flowchart LR
 - Metadata component for consistent SEO
 - OG Image generation
 - Structured data injection
+- Sitemap generation
+- RSS feed generation
 
 ### Content Components
 - YouTube video embed
 - Code syntax highlighting
 - Table of contents generation
 - Related posts suggestion
+- Tag cloud component
 
 ### UI Patterns
 - Responsive layout system
 - Theme switching
 - Loading states
 - Error boundaries
+- Navigation patterns
+
+### Data Management
+- MDX content handling
+- Metadata extraction
+- Search indexing
+- Content synchronization
+- Database migrations
