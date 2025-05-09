@@ -14,11 +14,21 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <Link href="/" className="flex items-center space-x-2 text-lg font-semibold">
-          <span>YouTube Summary Blog</span>
+          <span>つべのまとめ</span>
         </Link>
         <Separator orientation="vertical" className="mx-6 h-6" />
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link href="/blog" legacyBehavior passHref>
+                <NavigationMenuLink>新着</NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/tags" legacyBehavior passHref>
+                <NavigationMenuLink>タグ一覧</NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuTrigger>カテゴリー</NavigationMenuTrigger>
               <NavigationMenuContent>
