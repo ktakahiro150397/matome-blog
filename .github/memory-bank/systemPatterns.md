@@ -11,7 +11,8 @@
 ├── content/          # MDX blog posts
 ├── lib/              # Utility functions
 │   ├── db/          # Database related code
-│   └── mdx/         # MDX processing
+│   ├── mdx/         # MDX processing
+│   └── tags/        # タグ関連ユーティリティ
 ├── prisma/          # Database schema and migrations
 ├── public/          # Static assets
 └── scripts/         # Utility scripts
@@ -27,6 +28,8 @@ flowchart TD
     Meta --> DB[SQLite Database]
     Meta --> Pages[Static Pages]
     DB --> Search[Search Index]
+    Meta --> Tags[Tag System]
+    Tags --> TagPages[Tag Pages]
 ```
 
 ### Page Generation
@@ -44,10 +47,32 @@ flowchart TD
     Main --> BlogList[Blog List]
     Main --> BlogPost[Blog Post]
     Main --> Search[Search Component]
+    Main --> TagPages[Tag Pages]
     
     BlogList --> Card[Blog Card]
     BlogPost --> TOC[Table of Contents]
     BlogPost --> RelatedPosts[Related Posts]
+    BlogPost --> TagList[Tag List]
+    
+    TagPages --> TagCloud[Tag Cloud]
+    TagPages --> BlogList
+```
+
+### Tag System Architecture
+```mermaid
+flowchart TD
+    TagUtils[Tag Utilities] --> GetAllTags[getAllTags]
+    TagUtils --> GetPostsByTag[getPostsByTag]
+    TagUtils --> FindTagBySlug[findTagBySlug]
+    TagUtils --> TagToSlug[tagToSlug]
+    
+    GetAllTags --> TagCloud[TagCloud Component]
+    GetPostsByTag --> TagDetailPage[Tag Detail Page]
+    FindTagBySlug --> TagDetailPage
+    TagToSlug --> TagLinks[Tag Links]
+    
+    TagCloud --> TagsPage[Tags Page]
+    TagDetailPage --> FilteredPosts[Filtered Posts]
 ```
 
 ### Data Flow
@@ -58,6 +83,8 @@ flowchart LR
     MDX --> Meta[Metadata]
     Meta --> Search[Search Index]
     Search --> Client[Client-side Search]
+    Meta --> Tags[Tag Metadata]
+    Tags --> TagSystem[Tag System]
 ```
 
 ## Reusable Patterns
@@ -75,6 +102,7 @@ flowchart LR
 - Table of contents generation
 - Related posts suggestion
 - Tag cloud component
+- Tag list component
 
 ### UI Patterns
 - Responsive layout system
@@ -82,6 +110,7 @@ flowchart LR
 - Loading states
 - Error boundaries
 - Navigation patterns
+- Tag visualization patterns
 
 ### Data Management
 - MDX content handling
@@ -89,3 +118,4 @@ flowchart LR
 - Search indexing
 - Content synchronization
 - Database migrations
+- Tag extraction and normalization
