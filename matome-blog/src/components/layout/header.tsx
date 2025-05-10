@@ -11,7 +11,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Separator } from "@/components/ui/separator"
-import { Menu, X } from "lucide-react"
+import { Menu, Search, X } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 export function Header() {
@@ -37,6 +37,14 @@ export function Header() {
               <NavigationMenuItem>
                 <Link href="/tags" legacyBehavior passHref>
                   <NavigationMenuLink>タグ一覧</NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/search" legacyBehavior passHref>
+                  <NavigationMenuLink className="flex items-center gap-1">
+                    <Search size={16} />
+                    <span>検索</span>
+                  </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -104,6 +112,14 @@ export function Header() {
                   onClick={() => setIsOpen(false)}
                 >
                   タグ一覧
+                </Link>
+                <Link 
+                  href="/search" 
+                  className="py-2 border-b border-muted flex items-center gap-2" 
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Search size={16} />
+                  <span>検索</span>
                 </Link>
                 <Link 
                   href="/tags/technology" 

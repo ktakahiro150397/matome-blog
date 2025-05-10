@@ -40,8 +40,8 @@ async function syncContent() {
           title: frontmatter.title,
           excerpt: frontmatter.excerpt,
           content: mdxContent,
-          videoId: frontmatter.videoId,
-          videoUrl: frontmatter.videoUrl,
+          videoId: frontmatter.videoId ?? '',
+          videoUrl: frontmatter.videoUrl ?? '',
           publishedAt: new Date(frontmatter.publishedAt),
           tags: {
             set: tags.map(tag => ({ id: tag.id })),
@@ -52,8 +52,8 @@ async function syncContent() {
           title: frontmatter.title,
           excerpt: frontmatter.excerpt,
           content: mdxContent,
-          videoId: frontmatter.videoId,
-          videoUrl: frontmatter.videoUrl,
+          videoId: frontmatter.videoId ?? '',
+          videoUrl: frontmatter.videoUrl ?? '',
           publishedAt: new Date(frontmatter.publishedAt),
           tags: {
             connect: tags.map(tag => ({ id: tag.id })),
