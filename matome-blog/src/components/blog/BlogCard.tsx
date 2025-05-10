@@ -1,6 +1,13 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
@@ -13,7 +20,20 @@ interface BlogCardProps {
   tags: Array<{ id: string; name: string; slug: string }>;
 }
 
-export function BlogCard({ title, excerpt, slug, publishedAt, videoId, tags }: BlogCardProps) {
+export function BlogCard({
+  title,
+  excerpt,
+  slug,
+  publishedAt,
+  videoId,
+  tags,
+}: BlogCardProps) {
+  const handleTagClick = (e: React.MouseEvent, tagSlug: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = `/tags/${tagSlug}`;
+  };
+
   return (
     <Link href={`/blog/${slug}`} className="block">
       <Card className="h-full transition-all hover:shadow-lg">
@@ -37,14 +57,16 @@ export function BlogCard({ title, excerpt, slug, publishedAt, videoId, tags }: B
         <CardFooter className="flex flex-wrap justify-between gap-2">
           <div className="flex flex-wrap gap-2">
             {tags?.map((tag) => (
-              <Link
+              <button
                 key={tag.slug}
-                href={`/tags/${tag.slug}`}
-                className="text-sm text-muted-foreground hover:text-primary"
-                onClick={(e) => e.stopPropagation()}
+                type="button"
+                className="text-sm text-muted-foreground hover:text-primary underline underline-offset-2 cursor-pointer bg-transparent border-none p-0"
+                onClick={(e) => handleTagClick(e, tag.slug)}
+                tabIndex={0}
+                aria-label={`タグ: ${tag.name}`}
               >
                 #{tag.name}
-              </Link>
+              </button>
             ))}
           </div>
           <time
