@@ -46,6 +46,7 @@
    - ✅ ナビゲーションのLink構文刷新（legacyBehavior廃止、asChild構文統一）
    - ✅ BlogCardのタグリンク入れ子エラー解消（button化）
    - ✅ 新着ページ（/blog）を実装。最新記事を降順・ページネーション付きで表示。
+   - ✅ Google Fonts「M PLUS 1p」フォントを全体に適用（Next.js font API）。UI改善の一環。
 
 ## Next Steps
 1. 検索・ページネーションのテスト拡充
