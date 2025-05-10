@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-content": "ts-node --project tsconfig.json scripts/sync-content.ts",
+    "sync-content": "ts-node --project scripts/tsconfig.json scripts/sync-content.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
