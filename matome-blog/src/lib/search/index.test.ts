@@ -133,4 +133,38 @@ describe("searchPosts", () => {
       total: 5,
     });
   });
+
+  it("should handle DB error gracefully", async () => {
+    vi.mocked(prisma.post.findMany).mockRejectedValue(new Error("DB error"));
+    vi.mocked(prisma.post.count).mockResolvedValue(0);
+    await expect(searchPosts("error")).rejects.toThrow("DB error");
+  });
+
+  it("should handle negative and large page numbers", async () => {
+    type MockPost = {
+      id: string;
+      title: string;
+      slug: string;
+      content: string;
+      excerpt: string;
+      videoId: string;
+      videoUrl: string;
+      publishedAt: Date;
+      updatedAt: Date;
+      tags: Array<{ id: string; name: string; slug: string }>;
+    };
+    const mockPosts: MockPost[] = [];
+    vi.mocked(prisma.post.findMany).mockResolvedValue(mockPosts);
+    vi.mocked(prisma.post.count).mockResolvedValue(0);
+    // Negative page
+    await expect(searchPosts("test", -1, 10)).resolves.toEqual({
+      posts: mockPosts,
+      total: 0,
+    });
+    // Large page
+    await expect(searchPosts("test", 10000, 10)).resolves.toEqual({
+      posts: mockPosts,
+      total: 0,
+    });
+  });
 });

@@ -64,6 +64,7 @@ export function BlogCard({
                 onClick={(e) => handleTagClick(e, tag.slug)}
                 tabIndex={0}
                 aria-label={`タグ: ${tag.name}`}
+                data-testid="tag-link"
               >
                 #{tag.name}
               </button>
