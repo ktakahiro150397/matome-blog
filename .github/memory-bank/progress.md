@@ -1,5 +1,27 @@
 # Progress Tracking
 
+## 2025-05-11 Markdown本文のproseクラス二重適用解消
+
+- 記事ページ([slug]/page.tsx)のproseクラスを削除し、MarkdownBody.tsx側でのみproseを適用するよう修正。
+- これにより、見出し・リスト・引用などのカスタムスタイルが正しく反映される。
+- テスト・型・ESLintエラーなし。
+
+---
+
+## 2025-05-11 Markdown本文のproseクラス反映修正
+
+- MarkdownBody.tsxでproseクラスをdivでラップし、記事本文の見出し・リスト・引用など全体にスタイルが確実に反映されるよう修正。
+- テスト・型・ESLintエラーなし。
+
+---
+
+## 2025-05-11 h1〜h5見出しのスタイル改善
+
+- Markdown本文のh1〜h5見出しに、本文との差別化のため大きな文字サイズ・太字・余白・レスポンシブ対応を追加。
+- テスト・型・ESLintエラーなし。
+
+---
+
 ## 2025-05-11 更新
 
 - `content/posts/markdown-sample.mdx` をDBに投入し、記事として追加。

@@ -112,7 +112,7 @@ export default async function BlogPost({ params }: PageProps) {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8">
-          <div className="prose prose-neutral dark:prose-invert max-w-none">
+          <div>
             <MarkdownBody content={content} />
           </div>
           <aside className="hidden lg:block">

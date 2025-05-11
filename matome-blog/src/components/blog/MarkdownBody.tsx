@@ -8,5 +8,10 @@ interface MarkdownBodyProps {
 }
 
 export default function MarkdownBody({ content }: MarkdownBodyProps) {
-  return <MDXProvider components={markdownComponents}>{content}</MDXProvider>;
+  // 記事ページ側のproseクラスを除去し、ここでのみproseを適用することで二重適用を防ぐ
+  return (
+    <div className="prose prose-neutral dark:prose-invert max-w-none">
+      <MDXProvider components={markdownComponents}>{content}</MDXProvider>
+    </div>
+  );
 }
