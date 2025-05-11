@@ -25,3 +25,11 @@ See command output, and check your working directory is correct, and:
 ```bash
 npm install something-awesome-package
 ```
+
+# Test
+
+You MUST run the test before you complete the task.
+
+```bash
+npm test
+```

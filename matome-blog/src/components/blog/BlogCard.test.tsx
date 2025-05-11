@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BlogCard, BlogCardSkeleton } from "./BlogCard";
 import React from "react";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // next/linkのモックを改善
 type LinkProps = React.PropsWithChildren<{
@@ -70,6 +72,23 @@ vi.mock("@/components/ui/skeleton", () => ({
   ),
 }));
 
+function withAppRouterProvider(children: React.ReactNode) {
+  // ダミーのrouterオブジェクト
+  const router: Partial<AppRouterInstance> = {
+    push: () => {},
+    replace: () => {},
+    refresh: () => {},
+    back: () => {},
+    forward: () => {},
+    prefetch: () => Promise.resolve(),
+  };
+  return (
+    <AppRouterContext.Provider value={router as AppRouterInstance}>
+      {children}
+    </AppRouterContext.Provider>
+  );
+}
+
 describe("BlogCard", () => {
   const mockProps = {
     title: "Test Blog Post",
@@ -89,7 +108,7 @@ describe("BlogCard", () => {
   // });
 
   it("renders the blog card with all provided information", () => {
-    render(<BlogCard {...mockProps} />);
+    render(withAppRouterProvider(<BlogCard {...mockProps} />));
 
     // タイトルが表示されていることを確認
     expect(screen.getByText("Test Blog Post")).toBeInTheDocument();
@@ -110,8 +129,8 @@ describe("BlogCard", () => {
     expect(screen.getByText("#Next.js")).toBeInTheDocument();
 
     // 公開日が表示されていることを確認
-    // 実際の出力フォーマットに合わせて修正（5/9/2025 → 2025/5/9）
-    const publishedDate = screen.getByText("2025/5/9");
+    // 実際の出力フォーマットに合わせて修正（2025/05/09 09:00）
+    const publishedDate = screen.getByText("2025/05/09 09:00");
     expect(publishedDate).toBeInTheDocument();
 
     // メインのブログリンクが存在することを確認
@@ -133,7 +152,7 @@ describe("BlogCard", () => {
       excerpt: null,
     };
 
-    render(<BlogCard {...propsWithoutExcerpt} />);
+    render(withAppRouterProvider(<BlogCard {...propsWithoutExcerpt} />));
 
     // タイトルは表示されているが、抜粋は表示されていないことを確認
     expect(screen.getByText("Test Blog Post")).toBeInTheDocument();
@@ -148,7 +167,7 @@ describe("BlogCard", () => {
       tags: [],
     };
 
-    render(<BlogCard {...propsWithoutTags} />);
+    render(withAppRouterProvider(<BlogCard {...propsWithoutTags} />));
 
     // タグが表示されていないことを確認
     expect(screen.queryByText("#React")).not.toBeInTheDocument();
@@ -158,7 +177,7 @@ describe("BlogCard", () => {
 
 describe("BlogCardSkeleton", () => {
   it("renders the skeleton UI components", () => {
-    render(<BlogCardSkeleton />);
+    render(withAppRouterProvider(<BlogCardSkeleton />));
 
     // スケルトンコンポーネントが存在することを確認
     const skeletons = screen.getAllByTestId("skeleton");

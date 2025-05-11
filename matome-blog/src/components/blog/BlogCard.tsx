@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface BlogCardProps {
   title: string;
@@ -28,10 +29,12 @@ export function BlogCard({
   videoId,
   tags,
 }: BlogCardProps) {
+  const router = useRouter();
+
   const handleTagClick = (e: React.MouseEvent, tagSlug: string) => {
     e.preventDefault();
     e.stopPropagation();
-    window.location.href = `/tags/${tagSlug}`;
+    router.push(`/tags/${tagSlug}`);
   };
 
   // 日付フォーマット関数
