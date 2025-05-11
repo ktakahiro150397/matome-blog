@@ -1,3 +1,7 @@
+---
+applyTo: "**"
+---
+
 # Directory
 
 If you want to execute npm command, you MUST check weather your current working directory is correct. This is NOT an option.
@@ -6,19 +10,18 @@ If you want to execute npm command, you MUST check weather your current working 
 
 You MUST NOT execute like below (You must check your current directory)
 
-``` bash
+```bash
 cd xxxx && npm install something-awesome-package
 ```
 
 ## YOU MUST DO
 
-``` bash
+```bash
 ls -l
 ```
 
 See command output, and check your working directory is correct, and:
 
-``` bash
+```bash
 npm install something-awesome-package
 ```
-
