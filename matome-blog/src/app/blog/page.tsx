@@ -12,10 +12,8 @@ interface BlogPageProps {
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const page =
-    searchParams && typeof searchParams.page === "string"
-      ? parseInt(searchParams.page, 10)
-      : 1;
+  const params = searchParams ? await searchParams : {};
+  const page = typeof params.page === "string" ? parseInt(params.page, 10) : 1;
   const limit = 9;
   const skip = (page - 1) * limit;
 

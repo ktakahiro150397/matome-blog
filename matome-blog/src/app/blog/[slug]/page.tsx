@@ -14,7 +14,7 @@ interface PageProps {
 
 export async function generateStaticParams() {
   const posts = await prisma.post.findMany({
-    select: { slug: true }
+    select: { slug: true },
   });
 
   return posts.map((post) => ({
@@ -23,11 +23,12 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPost({ params }: PageProps) {
-  const { slug } = params;
+  const awaitedParams = params ? await params : { slug: "" };
+  const { slug } = awaitedParams;
 
   const post = await prisma.post.findUnique({
     where: { slug },
-    include: { tags: true }
+    include: { tags: true },
   });
 
   if (!post) {
@@ -35,9 +36,9 @@ export default async function BlogPost({ params }: PageProps) {
   }
 
   // MDXファイルの読み込み
-  const filePath = path.join(process.cwd(), 'content', 'posts', `${slug}.mdx`);
-  const source = await fs.readFile(filePath, 'utf-8');
-  
+  const filePath = path.join(process.cwd(), "content", "posts", `${slug}.mdx`);
+  const source = await fs.readFile(filePath, "utf-8");
+
   const { content } = await parseMDX(source);
   const headings = extractHeadings(source);
 
@@ -47,18 +48,18 @@ export default async function BlogPost({ params }: PageProps) {
       tags: {
         some: {
           id: {
-            in: post.tags.map(tag => tag.id)
-          }
-        }
+            in: post.tags.map((tag) => tag.id),
+          },
+        },
       },
       NOT: {
-        id: post.id
-      }
+        id: post.id,
+      },
     },
     include: {
-      tags: true
+      tags: true,
     },
-    take: 3
+    take: 3,
   });
 
   return (
