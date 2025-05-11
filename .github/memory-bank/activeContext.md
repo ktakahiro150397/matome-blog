@@ -2,11 +2,11 @@
 
 ## Current Focus
 
-- ブログ機能の拡張
-- UI/UXの改善（ナビゲーションのLink構造刷新、BlogCard・記事リストのデザイン微調整）
-- SEO対応の実装
-- 検索・ページネーション・同期スクリプトの実装・テスト
-- 検索・ページネーション・UIの異常系・エッジケースのテスト拡充（完了）
+- UI/UX改善・テスト・エラーUI・Router対応のプルリク修正対応（完了）
+- BlogCard/BlogList/ナビゲーション等のデザイン最適化
+- 検索・ページネーション・異常系テスト拡充
+- Next.js App Routerのパラメータ取得警告対応
+- すべてのテストがパスすることを確認済み
 
 ### BlogCard・記事リストのUI/UX細部改善
 
@@ -24,6 +24,11 @@
 - `/`, `/blog`, `/search`, `/blog/[slug]`, `/tags/[slug]` など全ての該当ページで対応済み
 
 ## Recent Decisions
+
+- テストはAppRouterContext.Providerでラップし、useRouterのエラーを回避
+- searchPostsのモックはvi.fn()で直接作成し、vi.mockの初期化順序もESM対応
+- BlogCardの日付テストは実際の出力に合わせて修正
+- すべての修正内容はメモリバンク・進捗ファイルに反映
 
 1. コンテンツ管理方式
    - MDXファイルベースを採用（実装完了）

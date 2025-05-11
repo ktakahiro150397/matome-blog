@@ -1,6 +1,6 @@
 # Progress Tracking
 
-## Project Status: 基本機能実装段階
+## Project Status: UI/UX・テスト・エラーUI・Router対応 完了
 
 ## Completed Items
 
@@ -50,6 +50,15 @@
   - ✅ 検索・ページネーション・UIの異常系・エッジケースのテスト拡充（DBエラー、極端なページ番号、UIエラー表示、タグボタンのテスト修正）
   - ✅ Next.js App RouterのsearchParams/paramsのプロパティ利用前にawaitを徹底し、全ページで警告が出ないよう修正
   - ✅ BlogCard・記事リストのUI/UX細部改善（タグリンクの視認性・タップ領域・丸み、サムネイル画像・タイトル・日付レイアウト、カードの影・ボーダー・角丸・アニメーション調整、グリッドgap拡大）
+- ✅ UI/UX改善（BlogCard・BlogList・ナビゲーション等のデザイン最適化）
+- ✅ 検索・ページネーション・異常系テスト拡充
+- ✅ BlogCardのタグクリックをNext.js Router遷移に修正
+- ✅ 新着記事ページのページ番号不正時のエラーUI実装
+- ✅ 検索ページのエラー時テスト改善
+- ✅ AppRouterContext.ProviderでテストラップしuseRouterエラー回避
+- ✅ searchPostsのモックをvi.fn()で直接作成しESM初期化順序問題を解消
+- ✅ BlogCardの日付テストを実際の出力に合わせて修正
+- ✅ すべてのテストがパスすることを確認済み
 
 ## In Progress
 
@@ -67,3 +76,8 @@
 5. ページネーションUI改善（現在ページの強調、ページ数ジャンプなど）
 6. 記事詳細ページの目次・関連記事デザイン強化
 7. 記事ごとのSNSシェア機能の検討・実装
+
+## Known Issues / Next Steps
+
+- 追加のUI/UX改善や新機能要望があれば随時対応
+- メモリバンク・進捗ファイルは常に最新状態を維持
