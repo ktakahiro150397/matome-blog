@@ -1,5 +1,5 @@
-import { Post, Tag } from '@prisma/client';
-import { prisma } from '../db/prisma';
+import { Post, Tag } from "@prisma/client";
+import { prisma } from "../db/prisma";
 
 export interface SearchResult {
   posts: (Post & { tags: Tag[] })[];
@@ -16,36 +16,36 @@ export async function searchPosts(
 ): Promise<SearchResult> {
   // Normalize query
   const normalizedQuery = query.trim().toLowerCase();
-  
+
   if (!normalizedQuery) {
     // Return latest posts if no query provided
     const posts = await prisma.post.findMany({
       include: { tags: true },
-      orderBy: { publishedAt: 'desc' },
+      orderBy: { publishedAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     });
-    
+
     const total = await prisma.post.count();
-    
+
     return {
       posts,
       total,
     };
   }
 
-  // Find posts that match the query in title or have a tag that matches
-  // SQLite doesn't support 'insensitive' mode, so we use 'contains' without specifying mode
+  // Find posts that match the query in title, tags, excerpt, or content
   const posts = await prisma.post.findMany({
     where: {
       OR: [
         { title: { contains: normalizedQuery } },
         { tags: { some: { name: { contains: normalizedQuery } } } },
         { excerpt: { contains: normalizedQuery } },
+        { content: { contains: normalizedQuery } },
       ],
     },
     include: { tags: true },
-    orderBy: { publishedAt: 'desc' },
+    orderBy: { publishedAt: "desc" },
     skip: (page - 1) * limit,
     take: limit,
   });
@@ -57,6 +57,7 @@ export async function searchPosts(
         { title: { contains: normalizedQuery } },
         { tags: { some: { name: { contains: normalizedQuery } } } },
         { excerpt: { contains: normalizedQuery } },
+        { content: { contains: normalizedQuery } },
       ],
     },
   });

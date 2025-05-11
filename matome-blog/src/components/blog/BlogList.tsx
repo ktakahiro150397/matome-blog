@@ -18,13 +18,23 @@ interface BlogListProps {
   showPagerBottom?: boolean;
 }
 
-function Pager({ currentPage, totalPages, baseUrl }: { currentPage: number; totalPages: number; baseUrl: string }) {
+function Pager({
+  currentPage,
+  totalPages,
+  baseUrl,
+}: {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}) {
   return (
     <div className="flex justify-center gap-2 my-6">
       {currentPage > 1 && (
         <Button variant="outline" asChild>
           <Link
-            href={`${baseUrl}${baseUrl.includes('?') ? '&' : '?'}page=${currentPage - 1}`}
+            href={`${baseUrl}${baseUrl.includes("?") ? "&" : "?"}page=${
+              currentPage - 1
+            }`}
             rel="prev"
           >
             前のページ
@@ -37,7 +47,9 @@ function Pager({ currentPage, totalPages, baseUrl }: { currentPage: number; tota
       {currentPage < totalPages && (
         <Button variant="outline" asChild>
           <Link
-            href={`${baseUrl}${baseUrl.includes('?') ? '&' : '?'}page=${currentPage + 1}`}
+            href={`${baseUrl}${baseUrl.includes("?") ? "&" : "?"}page=${
+              currentPage + 1
+            }`}
             rel="next"
           >
             次のページ
@@ -48,19 +60,34 @@ function Pager({ currentPage, totalPages, baseUrl }: { currentPage: number; tota
   );
 }
 
-export function BlogList({ posts, currentPage = 1, totalPages = 1, baseUrl = '', showPagerTop = false, showPagerBottom = true }: BlogListProps) {
+export function BlogList({
+  posts,
+  currentPage = 1,
+  totalPages = 1,
+  baseUrl = "",
+  showPagerTop = false,
+  showPagerBottom = true,
+}: BlogListProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {totalPages > 1 && showPagerTop && (
-        <Pager currentPage={currentPage} totalPages={totalPages} baseUrl={baseUrl} />
+        <Pager
+          currentPage={currentPage}
+          totalPages={totalPages}
+          baseUrl={baseUrl}
+        />
       )}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <BlogCard key={post.slug} {...post} />
         ))}
       </div>
       {totalPages > 1 && showPagerBottom && (
-        <Pager currentPage={currentPage} totalPages={totalPages} baseUrl={baseUrl} />
+        <Pager
+          currentPage={currentPage}
+          totalPages={totalPages}
+          baseUrl={baseUrl}
+        />
       )}
     </div>
   );
