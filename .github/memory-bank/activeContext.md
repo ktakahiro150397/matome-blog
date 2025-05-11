@@ -1,11 +1,43 @@
 # Active Context
 
+## 2025-05-11 更新
+
+
+### 実施内容
+
+- `content/posts/markdown-sample.mdx` をDBに投入し、記事として追加。
+- `scripts/sync-content.ts` を利用し、全MDX記事をDB同期。
+- 必要な依存（tsx）を `npm install tsx` で追加。
+- テスト（`npm test`）を実行し、全テストパスを確認。
+- 変更ファイル（同期スクリプト・mdx記事）のエラーなしを確認。
+
+
+### 現状
+
+- markdown-sample.mdxを含む全記事がDBに投入済み。
+- テスト・型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+
+### 次のアクション
+
+- UI上でmarkdown-sample.mdxが正しく表示されるか確認。
+- 必要に応じてUI/UXや記事表示の改善を検討。
+
+---
+
 ## Current Focus
 
 - 記事ごとのSNSシェアボタン（X対応、今後拡張可能設計）の実装・UI/UX改善
 - BlogCard/BlogList/記事詳細ページのUI/UX最適化
 - TableOfContentsのkey重複エラー修正
 - すべてのテストがパスすることを確認済み
+- 記事詳細ページのMarkdown本文表示を強化。h1〜h5やコードブロック、リスト、引用などの見た目をカスタムコンポーネントで最適化。
+- @mdx-js/reactのMDXProviderを導入し、/blog/[slug]/page.tsxで本文をラップ。
+- src/components/blog/MarkdownComponents.tsxを新規作成し、各要素のスタイルを細かく調整。
+- Server Componentでdynamic/ssr: falseを使わず、MarkdownBodyは通常importで利用する形に修正。
+- Prismaの関連投稿取得クエリのwhere句・include句を正しい形に修正。
+
 
 ### BlogCard・記事リストのUI/UX細部改善
 
@@ -17,6 +49,7 @@
 - 日付表示を「yyyy/MM/dd HH:mm」形式に統一
 - カード間のグリッドgap拡大で見やすく
 
+
 ### シェアボタン・UI/UX改善
 
 - ShareButtonコンポーネント新規作成（X用、今後拡張可能なprops設計）
@@ -25,10 +58,12 @@
 - aタグの入れ子エラーをbutton化で根本解消
 - TableOfContentsのリストkeyを`${id}-${idx}`形式でユニーク化し、重複keyエラーを解消
 
+
 ### Next.js App Routerのパラメータ取得の警告対応
 
 - searchParams/paramsのプロパティ利用前にawaitを徹底し、全ページで警告が出ないよう修正
 - `/`, `/blog`, `/search`, `/blog/[slug]`, `/tags/[slug]` など全ての該当ページで対応済み
+
 
 ## Recent Decisions
 
@@ -38,14 +73,20 @@
 - すべての修正内容はメモリバンク・進捗ファイルに反映
 - ShareButtonはClient Componentとして"use client"を明示
 - variant propsは将来拡張用で現状未使用
+- すべてのテストがパスし、ESLint等のエラーもなし
+- Prismaの関連投稿取得クエリのwhere句・include句を正しい形に修正。
+
 
 1. コンテンツ管理方式
+
    - MDXファイルベースを採用（実装完了）
    - メタデータ検索用にSQLiteを使用（実装完了）
    - フロントマターでメタデータを管理（publishedAtに統一、全記事修正済み）
    - コンテンツ同期スクリプトの堅牢化（videoId, videoUrlの補完対応）
 
+
 2. 技術スタックの実装状況
+
    - ✅ Next.js App Router
    - ✅ shadcn/ui
    - ✅ Tailwind CSS
@@ -53,25 +94,33 @@
    - ✅ Prisma (SQLite)
    - ✅ MDX
 
+
 3. コンポーネント設計
+
    - Client/Server Componentの使い分け
    - BlogCard, TableOfContents, ShareButtonなどの対話的なコンポーネントはClient Components
    - ページレベルのコンポーネントはServer Components
 
+
 4. タグ機能の実装
+
    - ✅ タグユーティリティ関数（getAllTags, getPostsByTag, findTagBySlug, tagToSlug）
    - ✅ タグ表示コンポーネント（TagList, TagCloud）
    - ✅ タグ一覧ページ（/tags）とタグ詳細ページ（/tags/[slug]）
    - ✅ 日本語タグのURLエンコード対応
    - ✅ ユニットテスト実装
 
+
 5. グローバルレイアウトの実装
+
    - ✅ ヘッダーの実装（サイト名「つべのまとめ」を設定）
    - ✅ ナビゲーションの実装（「新着」と「タグ一覧」リンクを追加）
    - ✅ フッターの実装（コンテンツリンク、リソースリンク、お問い合わせ、コピーライト、その他リンク）
    - ✅ モバイル対応ナビゲーションの実装（ハンバーガーメニューとスライドインナビゲーション）
 
+
 6. 検索・ページネーション・同期スクリプトの実装
+
    - ✅ 記事タイトル・タグ・抜粋・本文による全文検索ロジック（Prisma/SQLite）
    - ✅ 検索UIコンポーネント（SearchInput, SearchPage）
    - ✅ ページネーション対応（ルート・検索画面ともに上下ページャー）
@@ -89,6 +138,7 @@
    - ✅ 検索対象に本文(content)も追加し、テストも修正・パス済み。
    - ✅ 検索・ページネーション・UIの異常系・エッジケースのテスト拡充（DBエラー、極端なページ番号、UIエラー表示、タグボタンのテスト修正）
 
+
 ## Next Steps
 
 1. 検索・ページネーションのテスト拡充（完了）
@@ -99,3 +149,8 @@
 6. ページネーションUI改善（現在ページの強調、ページ数ジャンプなど）
 7. 記事詳細ページの目次・関連記事デザイン強化
 8. 記事ごとのSNSシェア機能の検討・実装（新規要望）
+9. 実際の表示確認（UIの微調整が必要なら追加対応）
+10. 他ページやリスト表示でのMarkdown利用有無を確認し、必要なら同様の強化を展開
+11. ユーザーからのフィードバックを受けてさらなるUI/UX改善
+12. UI表示確認・フィードバック対応
+13. 他ページへの展開が必要なら同様のパターンで実装

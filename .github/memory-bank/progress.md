@@ -1,5 +1,16 @@
 # Progress Tracking
 
+## 2025-05-11 更新
+
+- `content/posts/markdown-sample.mdx` をDBに投入し、記事として追加。
+- `scripts/sync-content.ts` で全MDX記事をDB同期。
+- `npm install tsx` で依存追加。
+- `npm test` で全テストパスを確認。
+- 変更ファイルのエラーなし。
+- Memory Bankも最新化。
+
+---
+
 ## Project Status: UI/UX・テスト・エラーUI・Router対応 完了
 
 ## Completed Items
@@ -62,6 +73,12 @@
 - ✅ 記事ごとのSNSシェアボタン（X）をBlogCard・記事詳細ページに追加、今後拡張可能な設計で実装
 - ✅ ShareButtonのUI/UX改善（カラー・hoverエフェクト・アクセシビリティ）
 - ✅ TableOfContentsのkey重複エラー修正
+- ✅ 記事詳細ページのMarkdown本文表示を強化（h1〜h5、コードブロック、リスト、引用などの見た目をカスタムコンポーネントで最適化）。
+- ✅ @mdx-js/reactのMDXProvider導入、MarkdownComponents.tsx新規作成。
+- ✅ すべてのテストがパスし、ESLint等のエラーもなし。
+- ✅ Server Componentでdynamic/ssr: falseを使わず、MarkdownBodyは通常importで利用する形に修正。
+- ✅ Prismaの関連投稿取得クエリのwhere句・include句を正しい形に修正。
+- ✅ すべてのテストがパスし、型・ESLintエラーもなし。
 
 ## In Progress
 

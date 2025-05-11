@@ -6,6 +6,7 @@ import { parseMDX, extractHeadings } from "@/lib/mdx";
 import { notFound } from "next/navigation";
 import fs from "fs/promises";
 import path from "path";
+import MarkdownBody from "@/components/blog/MarkdownBody";
 
 interface PageProps {
   params: {
@@ -24,8 +25,7 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPost({ params }: PageProps) {
-  const awaitedParams = params ? await params : { slug: "" };
-  const { slug } = awaitedParams;
+  const { slug } = params;
 
   const post = await prisma.post.findUnique({
     where: { slug },
@@ -113,7 +113,7 @@ export default async function BlogPost({ params }: PageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8">
           <div className="prose prose-neutral dark:prose-invert max-w-none">
-            {content}
+            <MarkdownBody content={content} />
           </div>
           <aside className="hidden lg:block">
             <TableOfContents headings={headings} />
