@@ -34,33 +34,49 @@ export function BlogCard({
     window.location.href = `/tags/${tagSlug}`;
   };
 
+  // 日付フォーマット関数
+  const formatDate = (date: Date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    const hh = String(date.getHours()).padStart(2, "0");
+    const mm = String(date.getMinutes()).padStart(2, "0");
+    return `${y}/${m}/${d} ${hh}:${mm}`;
+  };
+
   return (
-    <Link href={`/blog/${slug}`} className="block">
-      <Card className="h-full transition-all hover:shadow-lg">
-        <CardHeader>
-          <CardTitle className="line-clamp-2">{title}</CardTitle>
+    <Link
+      href={`/blog/${slug}`}
+      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-xl transition-shadow group"
+    >
+      <Card className="h-full transition-all shadow border border-border bg-card/90 group-hover:border-primary group-focus-visible:border-primary duration-150 ease-in-out rounded-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="line-clamp-2 text-lg font-bold group-hover:text-primary transition-colors">
+            {title}
+          </CardTitle>
           {excerpt && (
-            <CardDescription className="line-clamp-3">
+            <CardDescription className="line-clamp-3 text-base text-muted-foreground/90">
               {excerpt}
             </CardDescription>
           )}
         </CardHeader>
-        <CardContent>
-          <div className="aspect-video w-full">
+        <CardContent className="pt-0 pb-2">
+          <div className="aspect-video w-full overflow-hidden rounded-lg shadow-sm border border-border bg-muted">
             <img
               src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
               alt={title}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-200"
+              loading="lazy"
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-wrap justify-between gap-2">
+        <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
           <div className="flex flex-wrap gap-2">
             {tags?.map((tag) => (
               <button
                 key={tag.slug}
                 type="button"
-                className="text-sm text-muted-foreground hover:text-primary underline underline-offset-2 cursor-pointer bg-transparent border-none p-0"
+                className="text-xs px-3 py-1 rounded-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors cursor-pointer border-none outline-none min-w-[2.5rem]"
                 onClick={(e) => handleTagClick(e, tag.slug)}
                 tabIndex={0}
                 aria-label={`タグ: ${tag.name}`}
@@ -72,9 +88,9 @@ export function BlogCard({
           </div>
           <time
             dateTime={publishedAt.toISOString()}
-            className="text-sm text-muted-foreground"
+            className="text-xs text-muted-foreground/80"
           >
-            {publishedAt.toLocaleDateString()}
+            {formatDate(publishedAt)}
           </time>
         </CardFooter>
       </Card>
