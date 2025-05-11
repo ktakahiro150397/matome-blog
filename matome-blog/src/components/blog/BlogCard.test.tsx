@@ -144,6 +144,10 @@ describe("BlogCard", () => {
     expect(tagButtons[1].tagName).toBe("BUTTON");
     expect(tagButtons[0]).toHaveTextContent("#React");
     expect(tagButtons[1]).toHaveTextContent("#Next.js");
+
+    // シェアボタンが表示されていることを確認
+    const shareButton = screen.getByRole("button", { name: /Xでシェア/ });
+    expect(shareButton).toBeInTheDocument();
   });
 
   it("handles blog post without excerpt", () => {

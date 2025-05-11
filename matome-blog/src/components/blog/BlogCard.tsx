@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ShareButton } from "./ShareButton";
 
 interface BlogCardProps {
   title: string;
@@ -48,56 +49,65 @@ export function BlogCard({
   };
 
   return (
-    <Link
-      href={`/blog/${slug}`}
-      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-xl transition-shadow group"
-    >
-      <Card className="h-full transition-all shadow border border-border bg-card/90 group-hover:border-primary group-focus-visible:border-primary duration-150 ease-in-out rounded-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="line-clamp-2 text-lg font-bold group-hover:text-primary transition-colors">
-            {title}
-          </CardTitle>
-          {excerpt && (
-            <CardDescription className="line-clamp-3 text-base text-muted-foreground/90">
-              {excerpt}
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent className="pt-0 pb-2">
-          <div className="aspect-video w-full overflow-hidden rounded-lg shadow-sm border border-border bg-muted">
-            <img
-              src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
-              alt={title}
-              className="h-full w-full object-cover transition-transform duration-200"
-              loading="lazy"
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
-          <div className="flex flex-wrap gap-2">
-            {tags?.map((tag) => (
-              <button
-                key={tag.slug}
-                type="button"
-                className="text-xs px-3 py-1 rounded-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors cursor-pointer border-none outline-none min-w-[2.5rem]"
-                onClick={(e) => handleTagClick(e, tag.slug)}
-                tabIndex={0}
-                aria-label={`タグ: ${tag.name}`}
-                data-testid="tag-link"
+    <div className="h-full">
+      <Link
+        href={`/blog/${slug}`}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-xl transition-shadow group"
+        data-testid="blog-link"
+      >
+        <Card className="h-full transition-all shadow border border-border bg-card/90 group-hover:border-primary group-focus-visible:border-primary duration-150 ease-in-out rounded-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="line-clamp-2 text-lg font-bold group-hover:text-primary transition-colors">
+              {title}
+            </CardTitle>
+            {excerpt && (
+              <CardDescription className="line-clamp-3 text-base text-muted-foreground/90">
+                {excerpt}
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent className="pt-0 pb-2">
+            <div className="aspect-video w-full overflow-hidden rounded-lg shadow-sm border border-border bg-muted">
+              <img
+                src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+                alt={title}
+                className="h-full w-full object-cover transition-transform duration-200"
+                loading="lazy"
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
+            <div className="flex flex-wrap gap-2">
+              {tags?.map((tag) => (
+                <button
+                  key={tag.slug}
+                  type="button"
+                  className="text-xs px-3 py-1 rounded-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors cursor-pointer border-none outline-none min-w-[2.5rem]"
+                  onClick={(e) => handleTagClick(e, tag.slug)}
+                  tabIndex={0}
+                  aria-label={`タグ: ${tag.name}`}
+                  data-testid="tag-link"
+                >
+                  #{tag.name}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <time
+                dateTime={publishedAt.toISOString()}
+                className="text-xs text-muted-foreground/80"
               >
-                #{tag.name}
-              </button>
-            ))}
-          </div>
-          <time
-            dateTime={publishedAt.toISOString()}
-            className="text-xs text-muted-foreground/80"
-          >
-            {formatDate(publishedAt)}
-          </time>
-        </CardFooter>
-      </Card>
-    </Link>
+                {formatDate(publishedAt)}
+              </time>
+              <ShareButton
+                url={`https://matome-blog.vercel.app/blog/${slug}`}
+                text={title}
+              />
+            </div>
+          </CardFooter>
+        </Card>
+      </Link>
+    </div>
   );
 }
 

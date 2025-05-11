@@ -1,5 +1,6 @@
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
+import { ShareButton } from "@/components/blog/ShareButton";
 import { prisma } from "@/lib/db/prisma";
 import { parseMDX, extractHeadings } from "@/lib/mdx";
 import { notFound } from "next/navigation";
@@ -79,7 +80,7 @@ export default async function BlogPost({ params }: PageProps) {
               allowFullScreen
             />
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-2">
             {post.tags.map((tag) => (
               <a
                 key={tag.slug}
@@ -89,6 +90,24 @@ export default async function BlogPost({ params }: PageProps) {
                 #{tag.name}
               </a>
             ))}
+          </div>
+          <div className="flex items-center gap-2">
+            <time
+              dateTime={post.publishedAt.toISOString()}
+              className="text-xs text-muted-foreground/80"
+            >
+              {post.publishedAt.toLocaleString("ja-JP", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </time>
+            <ShareButton
+              url={`https://matome-blog.vercel.app/blog/${post.slug}`}
+              text={post.title}
+            />
           </div>
         </header>
 

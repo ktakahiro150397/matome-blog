@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -37,26 +37,35 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
       <h2 className="text-lg font-semibold">目次</h2>
       <Separator className="my-4" />
       <ul className="space-y-3 text-sm">
-        {headings.map(({ id, text, level }) => (
-          <li
-            key={id}
-            style={{ paddingLeft: `${(level - 2) * 1}rem` }}
-            className="line-clamp-2"
-          >
-            <a
-              href={`#${id}`}
-              className={`hover:text-primary transition-colors ${
-                activeId === id ? "text-primary font-medium" : "text-muted-foreground"
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-              }}
+        {headings.map(({ id, text, level }, idx) => {
+          // idが空や重複の場合に備えてユニークkeyを生成
+          const safeId = id && id !== "" ? id : `toc-blank-${idx}`;
+          const key = `${safeId}-${idx}`;
+          return (
+            <li
+              key={key}
+              style={{ paddingLeft: `${(level - 2) * 1}rem` }}
+              className="line-clamp-2"
             >
-              {text}
-            </a>
-          </li>
-        ))}
+              <a
+                href={`#${id}`}
+                className={`hover:text-primary transition-colors ${
+                  activeId === id
+                    ? "text-primary font-medium"
+                    : "text-muted-foreground"
+                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById(id)
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                {text}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

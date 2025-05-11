@@ -2,10 +2,9 @@
 
 ## Current Focus
 
-- UI/UX改善・テスト・エラーUI・Router対応のプルリク修正対応（完了）
-- BlogCard/BlogList/ナビゲーション等のデザイン最適化
-- 検索・ページネーション・異常系テスト拡充
-- Next.js App Routerのパラメータ取得警告対応
+- 記事ごとのSNSシェアボタン（X対応、今後拡張可能設計）の実装・UI/UX改善
+- BlogCard/BlogList/記事詳細ページのUI/UX最適化
+- TableOfContentsのkey重複エラー修正
 - すべてのテストがパスすることを確認済み
 
 ### BlogCard・記事リストのUI/UX細部改善
@@ -18,6 +17,14 @@
 - 日付表示を「yyyy/MM/dd HH:mm」形式に統一
 - カード間のグリッドgap拡大で見やすく
 
+### シェアボタン・UI/UX改善
+
+- ShareButtonコンポーネント新規作成（X用、今後拡張可能なprops設計）
+- BlogCard・記事詳細ページにXシェアボタンを追加
+- ボタンのカラー・hover時のエフェクト・アクセシビリティ対応
+- aタグの入れ子エラーをbutton化で根本解消
+- TableOfContentsのリストkeyを`${id}-${idx}`形式でユニーク化し、重複keyエラーを解消
+
 ### Next.js App Routerのパラメータ取得の警告対応
 
 - searchParams/paramsのプロパティ利用前にawaitを徹底し、全ページで警告が出ないよう修正
@@ -29,6 +36,8 @@
 - searchPostsのモックはvi.fn()で直接作成し、vi.mockの初期化順序もESM対応
 - BlogCardの日付テストは実際の出力に合わせて修正
 - すべての修正内容はメモリバンク・進捗ファイルに反映
+- ShareButtonはClient Componentとして"use client"を明示
+- variant propsは将来拡張用で現状未使用
 
 1. コンテンツ管理方式
    - MDXファイルベースを採用（実装完了）
@@ -46,7 +55,7 @@
 
 3. コンポーネント設計
    - Client/Server Componentの使い分け
-   - BlogCard, TableOfContentsなどの対話的なコンポーネントはClient Components
+   - BlogCard, TableOfContents, ShareButtonなどの対話的なコンポーネントはClient Components
    - ページレベルのコンポーネントはServer Components
 
 4. タグ機能の実装
