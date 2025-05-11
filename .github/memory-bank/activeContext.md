@@ -18,6 +18,11 @@
 - 日付表示を「yyyy/MM/dd HH:mm」形式に統一
 - カード間のグリッドgap拡大で見やすく
 
+### Next.js App Routerのパラメータ取得の警告対応
+
+- searchParams/paramsのプロパティ利用前にawaitを徹底し、全ページで警告が出ないよう修正
+- `/`, `/blog`, `/search`, `/blog/[slug]`, `/tags/[slug]` など全ての該当ページで対応済み
+
 ## Recent Decisions
 
 1. コンテンツ管理方式
