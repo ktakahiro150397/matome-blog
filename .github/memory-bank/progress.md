@@ -1,5 +1,36 @@
 # Progress Tracking
 
+## 2025-05-12 フッターお問い合わせ削除・RSSフィード実装
+
+- フッター（/src/components/layout/footer.tsx）から「お問い合わせフォーム」セクションを削除。
+- `/src/app/rss.xml/route.ts` を新規作成し、最新記事のRSSフィード（RSS2.0形式）を自動生成するAPIを追加。
+  - descriptionはPost.excerptを利用。
+- `npm test` で全テストパスを確認。
+- 追加・変更ファイルの型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+---
+
+## 2025-05-12 サイトマップ自動生成API実装
+
+- `/src/app/sitemap.xml/route.ts` を新規作成し、静的ページ・記事・タグを含むサイトマップ（XML）を自動生成するAPIを追加。
+- フッターの「サイトマップ」リンク（/sitemap.xml）からアクセス可能。
+- `npm test` で全テストパスを確認。
+- 追加・変更ファイルの型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+---
+
+## 2025-05-12 Aboutページ新規実装
+
+- `/src/app/about/page.tsx` を新規作成し、プロジェクトの目的・特徴・技術スタック・目指すものを記載したAboutページを追加。
+- ナビゲーションから `/about` への導線が有効であることを確認。
+- `npm test` で全テストパスを確認。
+- 追加・変更ファイルの型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+---
+
 ## 2025-05-11 Markdown本文のproseクラス二重適用解消
 
 - 記事ページ([slug]/page.tsx)のproseクラスを削除し、MarkdownBody.tsx側でのみproseを適用するよう修正。
