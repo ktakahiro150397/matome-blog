@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/db/prisma";
+import { PostWithReadingTime } from "@/lib/db/types";
 import { BlogList } from "@/components/blog/BlogList";
 import Link from "next/link";
 

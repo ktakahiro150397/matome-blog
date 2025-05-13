@@ -1,5 +1,6 @@
 import { BlogList } from "@/components/blog/BlogList";
 import { prisma } from "@/lib/db/prisma";
+import { PostWithReadingTime } from "@/lib/db/types";
 import { notFound } from "next/navigation";
 
 interface HomeProps {

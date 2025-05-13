@@ -1,5 +1,16 @@
 # Progress Tracking
 
+## 2025-05-14 読了時間表示機能の問題解決
+
+- 記事の読了時間が表示されない問題を調査・解決
+  - 原因: Prismaクライアントの型定義が古く、`readingTimeMinutes`フィールドが正しく認識されていなかった
+  - 解決策: `npx prisma generate`で最新のPrismaクライアントを生成
+  - `src/app/blog/[slug]/page.tsx`の未使用インポート警告も修正（`import { type Post, type Tag }`）
+- 修正後の検証:
+  - `npm test`で全46テストが正常通過
+  - 開発サーバーを起動し、全ページで読了時間表示が正しく機能することを確認
+- Memory Bankも更新して状況を記録
+
 ## 2025-05-14 記事詳細ページの読了時間表示エラー修正
 
 - `/blog/[slug]/page.tsx`で発生していた`readingTimeMinutes`プロパティの型エラーを修正。

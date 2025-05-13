@@ -2,12 +2,13 @@ import { TableOfContents } from "@/components/blog/TableOfContents";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { ShareButton } from "@/components/blog/ShareButton";
 import { prisma } from "@/lib/db/prisma";
+import { PostWithReadingTime } from "@/lib/db/types";
 import { parseMDX, extractHeadings } from "@/lib/mdx";
 import { notFound } from "next/navigation";
 import fs from "fs/promises";
 import path from "path";
 import MarkdownBody from "@/components/blog/MarkdownBody";
-import { Post, Tag } from "@prisma/client";
+import { type Post, type Tag } from "@prisma/client";
 
 interface PageProps {
   params: {
