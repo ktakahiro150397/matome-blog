@@ -19,6 +19,7 @@ interface BlogCardProps {
   slug: string;
   publishedAt: Date;
   videoId: string;
+  readingTimeMinutes?: number | null;
   tags: Array<{ id: string; name: string; slug: string }>;
 }
 
@@ -28,6 +29,7 @@ export function BlogCard({
   slug,
   publishedAt,
   videoId,
+  readingTimeMinutes,
   tags,
 }: BlogCardProps) {
   const router = useRouter();
@@ -99,6 +101,24 @@ export function BlogCard({
               >
                 {formatDate(publishedAt)}
               </time>
+              {readingTimeMinutes && (
+                <span className="text-xs text-muted-foreground/80 flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3 w-3"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  {readingTimeMinutes}分
+                </span>
+              )}
               <ShareButton
                 url={`https://matome-blog.vercel.app/blog/${slug}`}
                 text={title}
