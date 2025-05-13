@@ -45,10 +45,16 @@ export async function parseMDX(source: string) {
 
 export function extractHeadings(content: string) {
   const headingLines = content.split('\n').filter(line => line.match(/^#{2,4}\s/))
-  return headingLines.map(line => {
+  return headingLines.map((line, index) => {
     const level = line.match(/^(#{2,4})\s/)?.[1].length || 2
     const text = line.replace(/^#{2,4}\s/, '')
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    // 日本語などの非ASCII文字を含む場合でも一意のIDを生成するため、
+    // テキストのハッシュ化やインデックスを使用
+    let id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    // IDが空またはただの '-' になる場合は、インデックスとレベルを使用して一意のIDを生成
+    if (!id || id === '-') {
+      id = `heading-${level}-${index}`
+    }
     return { text, id, level }
   })
 }

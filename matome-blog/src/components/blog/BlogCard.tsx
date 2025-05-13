@@ -18,6 +18,7 @@ interface BlogCardProps {
   slug: string;
   publishedAt: Date;
   videoId: string;
+  readingTime?: number;
   tags: Array<{ id: string; name: string; slug: string }>;
 }
 
@@ -27,6 +28,7 @@ export function BlogCard({
   slug,
   publishedAt,
   videoId,
+  readingTime = 0,
   tags,
 }: BlogCardProps) {
   const router = useRouter();
@@ -73,8 +75,7 @@ export function BlogCard({
             />
           </div>
         </CardContent>
-        <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
-          <div className="flex flex-wrap gap-2">
+        <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">          <div className="flex flex-wrap gap-2">
             {tags?.map((tag) => (
               <button
                 key={tag.slug}
@@ -89,12 +90,19 @@ export function BlogCard({
               </button>
             ))}
           </div>
-          <time
-            dateTime={publishedAt.toISOString()}
-            className="text-xs text-muted-foreground/80"
-          >
-            {formatDate(publishedAt)}
-          </time>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
+            <time
+              dateTime={publishedAt.toISOString()}
+            >
+              {formatDate(publishedAt)}
+            </time>
+            {readingTime > 0 && (
+              <span className="flex items-center gap-1" data-testid="reading-time">
+                <span>•</span>
+                <span>{readingTime}分で読めます</span>
+              </span>
+            )}
+          </div>
         </CardFooter>
       </Card>
     </Link>

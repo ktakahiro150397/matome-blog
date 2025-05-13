@@ -9,6 +9,7 @@ interface BlogListProps {
     slug: string;
     publishedAt: Date;
     videoId: string;
+    readingTime?: number;
     tags: Array<{ id: string; name: string; slug: string }>;
   }>;
   currentPage?: number;

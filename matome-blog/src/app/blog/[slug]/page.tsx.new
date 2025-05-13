@@ -1,3 +1,4 @@
+// filepath: e:\repo\matome-blog\matome-blog\src\app\blog\[slug]\page.tsx
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { prisma } from "@/lib/db/prisma";
@@ -25,10 +26,12 @@ export async function generateStaticParams() {
 
 export default async function BlogPost({ params }: PageProps) {
   const awaitedParams = params ? await params : { slug: "" };
-  const { slug } = awaitedParams;  const post = await prisma.post.findUnique({
+  const { slug } = awaitedParams;
+
+  const post = await prisma.post.findUnique({
     where: { slug },
     include: { tags: true },
-  }) as PostWithTags;
+  });
 
   if (!post) {
     notFound();
@@ -40,6 +43,7 @@ export default async function BlogPost({ params }: PageProps) {
 
   const { content } = await parseMDX(source);
   const headings = extractHeadings(source);
+
   // 関連記事の取得（同じタグを持つ記事）
   const relatedPosts = await prisma.post.findMany({
     where: {
@@ -58,7 +62,8 @@ export default async function BlogPost({ params }: PageProps) {
       tags: true,
     },
     take: 3,
-  }) as PostWithTags[];
+  });
+
   return (
     <div className="container mx-auto px-4 py-8">
       <article className="max-w-4xl mx-auto">
@@ -88,14 +93,15 @@ export default async function BlogPost({ params }: PageProps) {
                 </a>
               ))}
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">              <time dateTime={post.publishedAt.toISOString()}>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <time dateTime={post.publishedAt.toISOString()}>
                 {new Date(post.publishedAt).toLocaleDateString("ja-JP", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                 })}
               </time>
-              {"readingTime" in post && post.readingTime > 0 && (
+              {post.readingTime > 0 && (
                 <span className="flex items-center gap-1">
                   <span>•</span>
                   <span>この記事は{post.readingTime}分で読めます</span>
@@ -115,7 +121,11 @@ export default async function BlogPost({ params }: PageProps) {
         </div>
       </article>
 
-      <RelatedPosts posts={relatedPosts} />
+      {relatedPosts.length > 0 && (
+        <div className="max-w-4xl mx-auto mt-16">
+          <RelatedPosts posts={relatedPosts} />
+        </div>
+      )}
     </div>
   );
 }
