@@ -1,27 +1,31 @@
-import { PrismaClient } from '@prisma/client';
-import fs from 'fs/promises';
-import path from 'path';
-import matter from 'gray-matter';
+import { PrismaClient } from "@prisma/client";
+import fs from "fs/promises";
+import path from "path";
+import matter from "gray-matter";
+import { calculateReadingTime } from "../src/lib/readingTime";
 
 const prisma = new PrismaClient();
 
 async function syncContent() {
   try {
     // MDXファイルを読み込む
-    const postsDir = path.join(process.cwd(), 'content', 'posts');
+    const postsDir = path.join(process.cwd(), "content", "posts");
     const files = await fs.readdir(postsDir);
-    const mdxFiles = files.filter(file => file.endsWith('.mdx'));
+    const mdxFiles = files.filter((file) => file.endsWith(".mdx"));
 
     for (const file of mdxFiles) {
       const filePath = path.join(postsDir, file);
-      const content = await fs.readFile(filePath, 'utf-8');
+      const content = await fs.readFile(filePath, "utf-8");
       const { data: frontmatter, content: mdxContent } = matter(content);
-      const slug = file.replace(/\.mdx$/, '');
+      const slug = file.replace(/\.mdx$/, "");
+
+      // 読了時間を計算
+      const readingTimeMinutes = calculateReadingTime(mdxContent);
 
       // タグの同期
       const tags = await Promise.all(
         (frontmatter.tags || []).map(async (tagName: string) => {
-          const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
+          const tagSlug = tagName.toLowerCase().replace(/\s+/g, "-");
           return prisma.tag.upsert({
             where: { slug: tagSlug },
             update: {},
@@ -40,11 +44,12 @@ async function syncContent() {
           title: frontmatter.title,
           excerpt: frontmatter.excerpt,
           content: mdxContent,
-          videoId: frontmatter.videoId ?? '',
-          videoUrl: frontmatter.videoUrl ?? '',
+          videoId: frontmatter.videoId ?? "",
+          videoUrl: frontmatter.videoUrl ?? "",
           publishedAt: new Date(frontmatter.publishedAt),
+          readingTimeMinutes: readingTimeMinutes,
           tags: {
-            set: tags.map(tag => ({ id: tag.id })),
+            set: tags.map((tag) => ({ id: tag.id })),
           },
         },
         create: {
@@ -52,19 +57,20 @@ async function syncContent() {
           title: frontmatter.title,
           excerpt: frontmatter.excerpt,
           content: mdxContent,
-          videoId: frontmatter.videoId ?? '',
-          videoUrl: frontmatter.videoUrl ?? '',
+          videoId: frontmatter.videoId ?? "",
+          videoUrl: frontmatter.videoUrl ?? "",
           publishedAt: new Date(frontmatter.publishedAt),
+          readingTimeMinutes: readingTimeMinutes,
           tags: {
-            connect: tags.map(tag => ({ id: tag.id })),
+            connect: tags.map((tag) => ({ id: tag.id })),
           },
         },
       });
     }
 
-    console.log('Content synced successfully!');
+    console.log("Content synced successfully!");
   } catch (error) {
-    console.error('Error syncing content:', error);
+    console.error("Error syncing content:", error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
