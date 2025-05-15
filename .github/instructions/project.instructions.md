@@ -1,5 +1,5 @@
 ---
-applyTo: "**"
+applyTo: "matome-blog/**"
 ---
 
 # Directory
