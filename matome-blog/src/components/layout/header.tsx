@@ -58,7 +58,7 @@ export function Header() {
                     <Link
                       href={link.href}
                       className={
-                        "flex items-center gap-1 px-3 py-2 rounded transition-colors " +
+                        "flex flex-row items-center gap-1 px-3 py-2 rounded transition-colors " +
                         (pathname === link.href
                           ? "text-primary font-bold underline underline-offset-4"
                           : "hover:text-primary/80 text-muted-foreground")
@@ -66,7 +66,8 @@ export function Header() {
                       aria-current={pathname === link.href ? "page" : undefined}
                       aria-label={link.label}
                     >
-                      {link.icon}
+                      {/* flex-rowで横並びを強制 */}
+                      {link.icon && <span className="mr-1 flex items-center">{link.icon}</span>}
                       <span>{link.label}</span>
                     </Link>
                   </NavigationMenuLink>

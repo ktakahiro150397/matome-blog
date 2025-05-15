@@ -1,5 +1,206 @@
 # Progress Tracking
 
+## 2025-05-15 Next.js 15 Dynamic API await対応状況
+
+- 全ての主要なpage.tsx（/articles/[slug]、/tags/[slug]、/blog、/search）は、paramsやsearchParamsのプロパティアクセス前にawaitを使うよう修正済み
+- /blog/[slug]/page.tsxは空ファイル、/page.tsxにはparams/searchParamsの直接利用なし
+- エラー検出ツール・テストともに問題なし
+- Next.js 15の「Dynamic APIs are Asynchronous」警告は全て解消済み
+- 47テスト全てパス、型・ESLintエラーもなし
+
+## 2025-05-15 /articles/[slug] await対応の明示
+
+- /articles/[slug]/page.tsx の params プロパティアクセス前に await を追加し、Next.js 15 Dynamic API仕様に完全準拠
+- テスト全47件パス、型・ESLintエラーもなし
+- これにより全ページで「Dynamic APIs are Asynchronous」警告は発生しないことを再確認
+
+## 2025-05-15 URL構造の改善
+
+- ブログのURL構造を直感的で意味のある形に整理
+  - 問題点: `/` と `/blog` が同じコンテンツ（最新記事）を表示、個別記事は `/blog/[slug]` という階層的に一貫性のないパス
+  - 解決策:
+    - ホームページ（`/`）を特別な「玄関」として再設計（最新記事プレビュー、人気タグ、サイト紹介）
+    - 新着記事ページ（`/blog`）を時系列記事一覧として明確にポジショニング
+    - 個別記事のURLを `/articles/[slug]` に変更し、階層構造の一貫性を向上
+  - 実装手順:
+    - `src/app/articles/[slug]/page.tsx` を新規作成し、既存の記事ページ機能を移行
+    - ホームページを機能豊富な構造に再設計（最新記事のプレビュー、タグクラウド、サイト紹介）
+    - `BlogCard` コンポーネントを修正し、新しいURL構造をサポート
+      - propsインターフェースにhrefプロパティを追加
+      - デフォルト値を `/articles/${slug}` に変更
+      - ShareButtonコンポーネントのURLも更新
+    - コンパイルエラーを修正
+      - `page.tsx`でのBlogCardコンポーネント使用方法を修正（`post={post}`形式から展開したプロパティ形式へ）
+      - TagCloudコンポーネントのプロパティ名を`maxItems`から`limit`に修正
+    - URL参照を含むテストも適切に更新
+  - 効果:
+    - 直感的で意味のあるURL構造の実現
+    - トップページのユーザー体験と情報アーキテクチャの改善
+    - URL構造の一貫性向上によるSEOへの好影響
+- Memory Bankも最新化し、変更を記録
+- プロジェクト全体で47テストが正常に通過
+
+## 2025-05-15 OG画像生成のフォント読み込み改善とクリーンアップ
+
+- OG画像生成の環境依存問題を解決
+  - 問題点: `process.cwd()`やファイルシステム直接アクセスはエッジランタイムで制限がある
+  - 解決策: 
+    - フォントファイルを`public/fonts`ディレクトリに移動
+    - リクエストURLのoriginを使用した絶対URLでフォントを参照
+  - 実装方法:
+    - `public/fonts`ディレクトリを作成
+    - `src/assets`から`public/fonts`にフォントファイルをコピー
+    - リクエストURLからorigin（ホスト部分）を取得して動的にフォントURLを構築
+    - 不要になった`src/assets`内のフォントファイルを削除（冗長ファイルの整理）
+  - 効果:
+    - 開発環境とVercelなど本番環境で一貫して動作
+    - ファイルシステムアクセスに依存しない堅牢な実装
+    - プロジェクト構造のクリーンアップ
+- テスト:
+  - OG画像の生成が正常に機能することを確認
+  - npmテスト全47テストが正常に通過
+
+## 2025-05-15 OG画像の日本語フォント対応
+
+- メタデータとSEO改善の包括的な実装を完了
+  - `generateMetadata`関数をブログ記事ページに追加
+  - JSON-LD構造化データコンポーネントを新規作成・実装
+  - 動的OGイメージ生成APIを実装
+  - robots.txtとsite.webmanifestを追加
+- 全テスト（47個）が正常に通過、既存機能への影響なし
+- SEOスコア向上のための基盤を整備
+  - 検索エンジン対応：構造化データ、メタデータ、OGP対応
+  - SNS共有対応：Twitter Cards、OGイメージ最適化
+  - クローラー対応：robots.txt、sitemap.xml連携
+- 継続的なSEO改善のための基盤が整備された
+
+## 2025-05-15 BlogCardテストの読了時間表示問題修正
+
+- `BlogCard.test.tsx`で読了時間表示に関するテストが失敗する問題を解決
+  - 原因: テストでは「5分で読めます」というテキストを期待していたが、実際のコンポーネント実装では「5分」という表示になっていた
+  - 問題のあるテスト: `renders the blog card with all provided information`
+  - 解決策:
+    - テスト内のプロパティ名を`readingTime`から`readingTimeMinutes`に変更
+    - テスト内の検索テキストを「5分で読めます」から「5分」に変更
+    - 「分で読めます」を検索する正規表現も「分」を検索するように修正
+  - 修正後の検証:
+    - `npm test`を実行し、全47テストが正常通過
+    - 読了時間表示のテストが期待通りに実行されることを確認
+- Memory Bankも最新化し、状況を記録
+- プロジェクト全体のテスト整合性が向上
+
+## 2025-05-14 読了時間表示機能の問題解決
+
+- 記事の読了時間が表示されない問題を調査・解決
+  - 原因: Prismaクライアントの型定義が古く、`readingTimeMinutes`フィールドが正しく認識されていなかった
+  - 解決策: `npx prisma generate`で最新のPrismaクライアントを生成
+  - `src/app/blog/[slug]/page.tsx`の未使用インポート警告も修正（`import { type Post, type Tag }`）
+- 修正後の検証:
+  - `npm test`で全46テストが正常通過
+  - 開発サーバーを起動し、全ページで読了時間表示が正しく機能することを確認
+- Memory Bankも更新して状況を記録
+
+## 2025-05-14 記事詳細ページの読了時間表示エラー修正
+
+- `/blog/[slug]/page.tsx`で発生していた`readingTimeMinutes`プロパティの型エラーを修正。
+  - 問題: Prismaの型定義で`readingTimeMinutes`フィールドが認識されていなかった
+  - 解決策: `PostWithReadingTime`インターフェース追加と適切な型アサーション実装
+  - 重複クエリを整理し、コードも最適化
+- `npx prisma generate`でPrismaクライアントを最新化も実施
+- `npm test`で全テスト正常パス確認
+- Memory Bankも最新化
+
+---
+
+## 2025-05-13 記事読了時間表示機能の完全実装
+
+- BlogCardコンポーネントと記事詳細ページ（/blog/[slug]/page.tsx）に読了時間表示UIを追加。
+  - 時計アイコンと「X分」表示でわかりやすく視覚化。
+  - 既存のメタデータ（日付、シェアボタン）と統一感のあるデザイン。
+- readingTime計算関数のテストを修正し、正しく動作することを確認。
+- 同期スクリプトを実行して、全記事の読了時間を再計算・DB更新。
+- すべてのテストが正常にパスすることを確認。
+
+---
+
+## 2025-05-13 記事読了時間表示機能（DB対応）
+
+- Prismaスキーマに`readingTimeMinutes`フィールド（整数型）を追加。
+- マイグレーション（`add_reading_time`）を作成・実行し、DBスキーマを更新。
+- `/src/lib/readingTime.ts`に読了時間計算ユーティリティ関数を実装。
+  - 日本語の平均読書速度（500文字/分）で計算。
+  - 文字数をカウントして読了時間を分単位で算出。
+  - ユニットテストも作成・実行。
+- `scripts/sync-content.ts`を拡張し、MDXファイル読み込み時に読了時間を計算・DB保存。
+- 同期スクリプトを実行して既存記事の読了時間をDB更新。
+- 読了時間表示UIはまだ未実装（次のステップ）。
+
+---
+
+## 2025-05-12 フッターお問い合わせ削除・RSSフィード実装
+
+- フッター（/src/components/layout/footer.tsx）から「お問い合わせフォーム」セクションを削除。
+- `/src/app/rss.xml/route.ts` を新規作成し、最新記事のRSSフィード（RSS2.0形式）を自動生成するAPIを追加。
+  - descriptionはPost.excerptを利用。
+- `npm test` で全テストパスを確認。
+- 追加・変更ファイルの型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+---
+
+## 2025-05-12 サイトマップ自動生成API実装
+
+- `/src/app/sitemap.xml/route.ts` を新規作成し、静的ページ・記事・タグを含むサイトマップ（XML）を自動生成するAPIを追加。
+- フッターの「サイトマップ」リンク（/sitemap.xml）からアクセス可能。
+- `npm test` で全テストパスを確認。
+- 追加・変更ファイルの型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+---
+
+## 2025-05-12 Aboutページ新規実装
+
+- `/src/app/about/page.tsx` を新規作成し、プロジェクトの目的・特徴・技術スタック・目指すものを記載したAboutページを追加。
+- ナビゲーションから `/about` への導線が有効であることを確認。
+- `npm test` で全テストパスを確認。
+- 追加・変更ファイルの型・ESLintエラーなし。
+- Memory Bankも最新化。
+
+---
+
+## 2025-05-11 Markdown本文のproseクラス二重適用解消
+
+- 記事ページ([slug]/page.tsx)のproseクラスを削除し、MarkdownBody.tsx側でのみproseを適用するよう修正。
+- これにより、見出し・リスト・引用などのカスタムスタイルが正しく反映される。
+- テスト・型・ESLintエラーなし。
+
+---
+
+## 2025-05-11 Markdown本文のproseクラス反映修正
+
+- MarkdownBody.tsxでproseクラスをdivでラップし、記事本文の見出し・リスト・引用など全体にスタイルが確実に反映されるよう修正。
+- テスト・型・ESLintエラーなし。
+
+---
+
+## 2025-05-11 h1〜h5見出しのスタイル改善
+
+- Markdown本文のh1〜h5見出しに、本文との差別化のため大きな文字サイズ・太字・余白・レスポンシブ対応を追加。
+- テスト・型・ESLintエラーなし。
+
+---
+
+## 2025-05-11 更新
+
+- `content/posts/markdown-sample.mdx` をDBに投入し、記事として追加。
+- `scripts/sync-content.ts` で全MDX記事をDB同期。
+- `npm install tsx` で依存追加。
+- `npm test` で全テストパスを確認。
+- 変更ファイルのエラーなし。
+- Memory Bankも最新化。
+
+---
+
 ## Project Status: UI/UX・テスト・エラーUI・Router対応 完了
 
 ## Completed Items
@@ -48,7 +249,7 @@
   - ✅ 検索UI/UX改善
   - ✅ 検索対象に本文(content)追加
   - ✅ 検索・ページネーション・UIの異常系・エッジケースのテスト拡充（DBエラー、極端なページ番号、UIエラー表示、タグボタンのテスト修正）
-  - ✅ Next.js App RouterのsearchParams/paramsのプロパティ利用前にawaitを徹底し、全ページで警告が出ないよう修正
+- ✅ Next.js App RouterのsearchParams/paramsのプロパティ利用前にawaitを徹底し、全ページで警告が出ないよう修正
   - ✅ BlogCard・記事リストのUI/UX細部改善（タグリンクの視認性・タップ領域・丸み、サムネイル画像・タイトル・日付レイアウト、カードの影・ボーダー・角丸・アニメーション調整、グリッドgap拡大）
 - ✅ UI/UX改善（BlogCard・BlogList・ナビゲーション等のデザイン最適化）
 - ✅ 検索・ページネーション・異常系テスト拡充
@@ -59,13 +260,21 @@
 - ✅ searchPostsのモックをvi.fn()で直接作成しESM初期化順序問題を解消
 - ✅ BlogCardの日付テストを実際の出力に合わせて修正
 - ✅ すべてのテストがパスすることを確認済み
+- ✅ 記事ごとのSNSシェアボタン（X）をBlogCard・記事詳細ページに追加、今後拡張可能な設計で実装
+- ✅ ShareButtonのUI/UX改善（カラー・hoverエフェクト・アクセシビリティ）
+- ✅ TableOfContentsのkey重複エラー修正
+- ✅ 記事詳細ページのMarkdown本文表示を強化（h1〜h5、コードブロック、リスト、引用などの見た目をカスタムコンポーネントで最適化）。
+- ✅ @mdx-js/reactのMDXProvider導入、MarkdownComponents.tsx新規作成。
+- ✅ すべてのテストがパスし、ESLint等のエラーもなし。
+- ✅ Server Componentでdynamic/ssr: falseを使わず、MarkdownBodyは通常importで利用する形に修正。
+- ✅ Prismaの関連投稿取得クエリのwhere句・include句を正しい形に修正。
+- ✅ すべてのテストがパスし、型・ESLintエラーもなし。
 
 ## In Progress
 
 - 🚧 ブログ機能の拡張
 - 🚧 UI/UXの改善（検索体験・カードUI・モバイル最適化・アクセシビリティ強化など）
 - 🚧 SEO対応の実装
-- 🚧 記事ごとのSNSシェア機能の検討・実装（新規要望）
 
 ## Pending Tasks
 
@@ -75,7 +284,7 @@
 4. フィードバック・エラー表示（検索結果0件時や通信エラー時の案内文・おすすめ記事表示）
 5. ページネーションUI改善（現在ページの強調、ページ数ジャンプなど）
 6. 記事詳細ページの目次・関連記事デザイン強化
-7. 記事ごとのSNSシェア機能の検討・実装
+7. 記事ごとのSNSシェア機能の拡張（他SNS対応など）
 
 ## Known Issues / Next Steps
 

@@ -16,7 +16,7 @@ vi.mock("next/link", () => {
     __esModule: true,
     default: ({ href, children, className, onClick }: LinkProps) => {
       // メインのブログカードリンクとタグリンクで異なるdata-testidを使用
-      const dataTestId = href.startsWith("/blog/") ? "blog-link" : "tag-link";
+      const dataTestId = href.startsWith("/articles/") ? "blog-link" : "tag-link";
       return (
         <a
           href={href}
@@ -95,7 +95,7 @@ describe("BlogCard", () => {  const mockProps = {
     slug: "test-blog-post",
     publishedAt: new Date("2025-05-09"),
     videoId: "abc123",
-    readingTime: 5,
+    readingTimeMinutes: 5,
     tags: [
       { id: "1", name: "React", slug: "react" },
       { id: "2", name: "Next.js", slug: "nextjs" },
@@ -132,12 +132,10 @@ describe("BlogCard", () => {  const mockProps = {
     expect(publishedDate).toBeInTheDocument();
 
     // 読書時間が表示されていることを確認
-    const readingTime = screen.getByText("5分で読めます");
-    expect(readingTime).toBeInTheDocument();
-
-    // メインのブログリンクが存在することを確認
+    const readingTime = screen.getByText("5分");
+    expect(readingTime).toBeInTheDocument();    // メインのブログリンクが存在することを確認
     const blogLink = screen.getByTestId("blog-link");
-    expect(blogLink).toHaveAttribute("href", "/blog/test-blog-post");
+    expect(blogLink).toHaveAttribute("href", "/articles/test-blog-post");
 
     // タグがbuttonで表示されていることを確認
     const tagButtons = screen.getAllByTestId("tag-link");
@@ -146,6 +144,10 @@ describe("BlogCard", () => {  const mockProps = {
     expect(tagButtons[1].tagName).toBe("BUTTON");
     expect(tagButtons[0]).toHaveTextContent("#React");
     expect(tagButtons[1]).toHaveTextContent("#Next.js");
+
+    // シェアボタンが表示されていることを確認
+    const shareButton = screen.getByRole("button", { name: /Xでシェア/ });
+    expect(shareButton).toBeInTheDocument();
   });
 
   it("handles blog post without excerpt", () => {
@@ -174,17 +176,16 @@ describe("BlogCard", () => {  const mockProps = {
     expect(screen.queryByText("#React")).not.toBeInTheDocument();
     expect(screen.queryByText("#Next.js")).not.toBeInTheDocument();
   });
-
   it("handles blog post without reading time", () => {
     const propsWithoutReadingTime = {
       ...mockProps,
-      readingTime: 0,
+      readingTimeMinutes: 0,
     };
 
     render(withAppRouterProvider(<BlogCard {...propsWithoutReadingTime} />));
 
     // 読書時間が表示されていないことを確認
-    expect(screen.queryByText(/分で読めます/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/分/)).not.toBeInTheDocument();
   });
 });
 

@@ -9,7 +9,7 @@ interface BlogListProps {
     slug: string;
     publishedAt: Date;
     videoId: string;
-    readingTime?: number;
+    readingTimeMinutes?: number | null;
     tags: Array<{ id: string; name: string; slug: string }>;
   }>;
   currentPage?: number;
@@ -77,10 +77,9 @@ export function BlogList({
           totalPages={totalPages}
           baseUrl={baseUrl}
         />
-      )}
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      )}      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
-          <BlogCard key={post.slug} {...post} />
+          <BlogCard key={post.slug} {...post} href={`/articles/${post.slug}`} />
         ))}
       </div>
       {totalPages > 1 && showPagerBottom && (

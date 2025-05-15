@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ShareButton } from "./ShareButton";
 
 interface BlogCardProps {
   title: string;
@@ -18,8 +19,9 @@ interface BlogCardProps {
   slug: string;
   publishedAt: Date;
   videoId: string;
-  readingTime?: number;
+  readingTimeMinutes?: number | null;
   tags: Array<{ id: string; name: string; slug: string }>;
+  href?: string;
 }
 
 export function BlogCard({
@@ -28,8 +30,9 @@ export function BlogCard({
   slug,
   publishedAt,
   videoId,
-  readingTime = 0,
+  readingTimeMinutes,
   tags,
+  href = `/articles/${slug}`,
 }: BlogCardProps) {
   const router = useRouter();
 
@@ -48,64 +51,83 @@ export function BlogCard({
     const mm = String(date.getMinutes()).padStart(2, "0");
     return `${y}/${m}/${d} ${hh}:${mm}`;
   };
-
   return (
-    <Link
-      href={`/blog/${slug}`}
-      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-xl transition-shadow group"
-    >
-      <Card className="h-full transition-all shadow border border-border bg-card/90 group-hover:border-primary group-focus-visible:border-primary duration-150 ease-in-out rounded-md">
-        <CardHeader className="pb-2">
-          <CardTitle className="line-clamp-2 text-lg font-bold group-hover:text-primary transition-colors">
-            {title}
-          </CardTitle>
-          {excerpt && (
-            <CardDescription className="line-clamp-3 text-base text-muted-foreground/90">
-              {excerpt}
-            </CardDescription>
-          )}
-        </CardHeader>
-        <CardContent className="pt-0 pb-2">
-          <div className="aspect-video w-full overflow-hidden rounded-lg shadow-sm border border-border bg-muted">
-            <img
-              src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
-              alt={title}
-              className="h-full w-full object-cover transition-transform duration-200"
-              loading="lazy"
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">          <div className="flex flex-wrap gap-2">
-            {tags?.map((tag) => (
-              <button
-                key={tag.slug}
-                type="button"
-                className="text-xs px-3 py-1 rounded-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors cursor-pointer border-none outline-none min-w-[2.5rem]"
-                onClick={(e) => handleTagClick(e, tag.slug)}
-                tabIndex={0}
-                aria-label={`タグ: ${tag.name}`}
-                data-testid="tag-link"
-              >
-                #{tag.name}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-            <time
-              dateTime={publishedAt.toISOString()}
-            >
-              {formatDate(publishedAt)}
-            </time>
-            {readingTime > 0 && (
-              <span className="flex items-center gap-1" data-testid="reading-time">
-                <span>•</span>
-                <span>{readingTime}分で読めます</span>
-              </span>
+    <div className="h-full">
+      <Link
+        href={href}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-xl transition-shadow group"
+        data-testid="blog-link"
+      >
+        <Card className="h-full transition-all shadow border border-border bg-card/90 group-hover:border-primary group-focus-visible:border-primary duration-150 ease-in-out rounded-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="line-clamp-2 text-lg font-bold group-hover:text-primary transition-colors">
+              {title}
+            </CardTitle>
+            {excerpt && (
+              <CardDescription className="line-clamp-3 text-base text-muted-foreground/90">
+                {excerpt}
+              </CardDescription>
             )}
-          </div>
-        </CardFooter>
-      </Card>
-    </Link>
+          </CardHeader>
+          <CardContent className="pt-0 pb-2">
+            <div className="aspect-video w-full overflow-hidden rounded-lg shadow-sm border border-border bg-muted">
+              <img
+                src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+                alt={title}
+                className="h-full w-full object-cover transition-transform duration-200"
+                loading="lazy"
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-wrap justify-between gap-2 pt-2">
+            <div className="flex flex-wrap gap-2">
+              {tags?.map((tag) => (
+                <button
+                  key={tag.slug}
+                  type="button"
+                  className="text-xs px-3 py-1 rounded-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors cursor-pointer border-none outline-none min-w-[2.5rem]"
+                  onClick={(e) => handleTagClick(e, tag.slug)}
+                  tabIndex={0}
+                  aria-label={`タグ: ${tag.name}`}
+                  data-testid="tag-link"
+                >
+                  #{tag.name}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <time
+                dateTime={publishedAt.toISOString()}
+                className="text-xs text-muted-foreground/80"
+              >
+                {formatDate(publishedAt)}
+              </time>
+              {readingTimeMinutes && (
+                <span className="text-xs text-muted-foreground/80 flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3 w-3"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  {readingTimeMinutes}分
+                </span>              )}
+              <ShareButton
+                url={`https://matome-blog.vercel.app${href}`}
+                text={title}
+              />
+            </div>
+          </CardFooter>
+        </Card>
+      </Link>
+    </div>
   );
 }
 

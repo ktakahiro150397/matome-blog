@@ -26,10 +26,11 @@ See command output, and check your working directory is correct, and:
 npm install something-awesome-package
 ```
 
-# Test
+# When you finish the task
 
-You MUST run the test before you complete the task.
+When you finish the task, you MUST do the following:
 
-```bash
-npm test
-```
+0. You should tell me what you will do the followings because I want to check your progress.
+1. You MUST run the test before you complete the task.
+2. You MUST check your modified file's problems are fixed.
+3. You MUST update your Memory Bank in current status.

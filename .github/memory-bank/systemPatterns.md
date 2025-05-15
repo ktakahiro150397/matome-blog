@@ -25,7 +25,9 @@
 flowchart TD
     MDX[MDX Files] --> Parser[MDX Parser]
     Parser --> Meta[Metadata Extraction]
+    Parser --> ReadingTime[Reading Time Calculation]
     Meta --> DB[SQLite Database]
+    ReadingTime --> DB
     Meta --> Pages[Static Pages]
     DB --> Search[Search Index]
     Meta --> Tags[Tag System]

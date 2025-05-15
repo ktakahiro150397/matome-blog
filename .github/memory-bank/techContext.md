@@ -30,10 +30,11 @@
 
 ### Search Implementation
 - SQLite + Prisma for metadata indexing
-  - Stores: title, description, tags, YouTube IDs, dates
+  - Stores: title, description, tags, YouTube IDs, dates, reading time
   - Built at compile time
   - Enables efficient client-side search
   - Content sync script for database updates
+  - Reading time calculation based on character count
 
 ### UI/UX
 - shadcn/ui components for consistent design

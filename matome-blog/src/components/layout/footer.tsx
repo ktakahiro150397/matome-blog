@@ -23,12 +23,6 @@ export function Footer() {
               <Link href="/rss.xml" className="hover:text-foreground">RSS</Link>
             </nav>
           </div>
-          <div className="flex flex-col gap-3">
-            <h3 className="text-lg font-semibold">お問い合わせ</h3>
-            <nav className="flex flex-col gap-2.5 text-sm text-muted-foreground">
-              <Link href="/contact" className="hover:text-foreground">お問い合わせフォーム</Link>
-            </nav>
-          </div>
         </div>
         <Separator />
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
