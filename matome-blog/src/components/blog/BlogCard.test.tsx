@@ -16,7 +16,7 @@ vi.mock("next/link", () => {
     __esModule: true,
     default: ({ href, children, className, onClick }: LinkProps) => {
       // メインのブログカードリンクとタグリンクで異なるdata-testidを使用
-      const dataTestId = href.startsWith("/blog/") ? "blog-link" : "tag-link";
+      const dataTestId = href.startsWith("/articles/") ? "blog-link" : "tag-link";
       return (
         <a
           href={href}
@@ -133,11 +133,9 @@ describe("BlogCard", () => {  const mockProps = {
 
     // 読書時間が表示されていることを確認
     const readingTime = screen.getByText("5分");
-    expect(readingTime).toBeInTheDocument();
-
-    // メインのブログリンクが存在することを確認
+    expect(readingTime).toBeInTheDocument();    // メインのブログリンクが存在することを確認
     const blogLink = screen.getByTestId("blog-link");
-    expect(blogLink).toHaveAttribute("href", "/blog/test-blog-post");
+    expect(blogLink).toHaveAttribute("href", "/articles/test-blog-post");
 
     // タグがbuttonで表示されていることを確認
     const tagButtons = screen.getAllByTestId("tag-link");

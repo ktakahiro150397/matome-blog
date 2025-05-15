@@ -21,6 +21,7 @@ interface BlogCardProps {
   videoId: string;
   readingTimeMinutes?: number | null;
   tags: Array<{ id: string; name: string; slug: string }>;
+  href?: string;
 }
 
 export function BlogCard({
@@ -31,6 +32,7 @@ export function BlogCard({
   videoId,
   readingTimeMinutes,
   tags,
+  href = `/articles/${slug}`,
 }: BlogCardProps) {
   const router = useRouter();
 
@@ -49,11 +51,10 @@ export function BlogCard({
     const mm = String(date.getMinutes()).padStart(2, "0");
     return `${y}/${m}/${d} ${hh}:${mm}`;
   };
-
   return (
     <div className="h-full">
       <Link
-        href={`/blog/${slug}`}
+        href={href}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-xl transition-shadow group"
         data-testid="blog-link"
       >
@@ -117,10 +118,9 @@ export function BlogCard({
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
                   {readingTimeMinutes}分
-                </span>
-              )}
+                </span>              )}
               <ShareButton
-                url={`https://matome-blog.vercel.app/blog/${slug}`}
+                url={`https://matome-blog.vercel.app${href}`}
                 text={title}
               />
             </div>
