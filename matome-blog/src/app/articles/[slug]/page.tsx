@@ -85,7 +85,7 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const { slug } = params;
+  const { slug } = await params;
 
   // 完全なPost型の取得（readingTimeMinutesを含む）
   const post = (await prisma.post.findUnique({

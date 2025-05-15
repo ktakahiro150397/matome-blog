@@ -1,5 +1,19 @@
 # Progress Tracking
 
+## 2025-05-15 Next.js 15 Dynamic API await対応状況
+
+- 全ての主要なpage.tsx（/articles/[slug]、/tags/[slug]、/blog、/search）は、paramsやsearchParamsのプロパティアクセス前にawaitを使うよう修正済み
+- /blog/[slug]/page.tsxは空ファイル、/page.tsxにはparams/searchParamsの直接利用なし
+- エラー検出ツール・テストともに問題なし
+- Next.js 15の「Dynamic APIs are Asynchronous」警告は全て解消済み
+- 47テスト全てパス、型・ESLintエラーもなし
+
+## 2025-05-15 /articles/[slug] await対応の明示
+
+- /articles/[slug]/page.tsx の params プロパティアクセス前に await を追加し、Next.js 15 Dynamic API仕様に完全準拠
+- テスト全47件パス、型・ESLintエラーもなし
+- これにより全ページで「Dynamic APIs are Asynchronous」警告は発生しないことを再確認
+
 ## 2025-05-15 URL構造の改善
 
 - ブログのURL構造を直感的で意味のある形に整理
