@@ -89,13 +89,13 @@ function withAppRouterProvider(children: React.ReactNode) {
   );
 }
 
-describe("BlogCard", () => {
-  const mockProps = {
+describe("BlogCard", () => {  const mockProps = {
     title: "Test Blog Post",
     excerpt: "This is a test excerpt for the blog post",
     slug: "test-blog-post",
     publishedAt: new Date("2025-05-09"),
     videoId: "abc123",
+    readingTimeMinutes: 5,
     tags: [
       { id: "1", name: "React", slug: "react" },
       { id: "2", name: "Next.js", slug: "nextjs" },
@@ -126,12 +126,14 @@ describe("BlogCard", () => {
 
     // タグが表示されていることを確認
     expect(screen.getByText("#React")).toBeInTheDocument();
-    expect(screen.getByText("#Next.js")).toBeInTheDocument();
-
-    // 公開日が表示されていることを確認
+    expect(screen.getByText("#Next.js")).toBeInTheDocument();    // 公開日が表示されていることを確認
     // 実際の出力フォーマットに合わせて修正（2025/05/09 09:00）
     const publishedDate = screen.getByText("2025/05/09 09:00");
     expect(publishedDate).toBeInTheDocument();
+
+    // 読書時間が表示されていることを確認
+    const readingTime = screen.getByText("5分");
+    expect(readingTime).toBeInTheDocument();
 
     // メインのブログリンクが存在することを確認
     const blogLink = screen.getByTestId("blog-link");
@@ -164,7 +166,6 @@ describe("BlogCard", () => {
       screen.queryByText("This is a test excerpt for the blog post")
     ).not.toBeInTheDocument();
   });
-
   it("handles blog post without tags", () => {
     const propsWithoutTags = {
       ...mockProps,
@@ -176,6 +177,17 @@ describe("BlogCard", () => {
     // タグが表示されていないことを確認
     expect(screen.queryByText("#React")).not.toBeInTheDocument();
     expect(screen.queryByText("#Next.js")).not.toBeInTheDocument();
+  });
+  it("handles blog post without reading time", () => {
+    const propsWithoutReadingTime = {
+      ...mockProps,
+      readingTimeMinutes: 0,
+    };
+
+    render(withAppRouterProvider(<BlogCard {...propsWithoutReadingTime} />));
+
+    // 読書時間が表示されていないことを確認
+    expect(screen.queryByText(/分/)).not.toBeInTheDocument();
   });
 });
 

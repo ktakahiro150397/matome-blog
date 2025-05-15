@@ -12,7 +12,6 @@ export default async function Home({ searchParams }: HomeProps) {
   const page = typeof params.page === "string" ? parseInt(params.page, 10) : 1;
   const limit = 9;
   const skip = (page - 1) * limit;
-
   const [posts, total] = await Promise.all([
     prisma.post.findMany({
       orderBy: { publishedAt: "desc" },
