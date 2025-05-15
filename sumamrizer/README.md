@@ -4,6 +4,75 @@
 
 本プロジェクトは、URL・テキスト・動画など多様な入力から内容を文字起こしし、要約をマークダウン形式で出力するPythonアプリケーションです。動画の文字起こしにはローカルGPUを活用し、高速かつ高精度な処理を実現します。
 
+## インストール方法
+
+### 前提条件
+- Python 3.8以上
+- GPU対応の場合はCUDA環境（オプション）
+
+### インストール手順
+
+1. リポジトリをクローン
+```bash
+git clone https://github.com/your-username/sumamrizer.git
+cd sumamrizer
+```
+
+2. 環境変数の設定
+```bash
+cp .env.example .env
+# .envファイルを編集してAPIキーなどを設定
+```
+
+3. 依存パッケージのインストール
+```bash
+# uvを使用する場合
+pip install uv
+uv pip install -e .
+
+# pipを使用する場合
+pip install -e .
+```
+
+## 使用方法
+
+### 基本的な使い方
+
+```bash
+# URLから取得して要約
+python main.py https://example.com/article
+
+# ローカルテキストファイルを要約
+python main.py path/to/document.txt
+
+# 動画/音声ファイルを文字起こしして要約
+python main.py path/to/video.mp4
+```
+
+### オプション
+
+```bash
+# コンソールに出力
+python main.py input.txt -o console
+
+# GPU使用を指定
+python main.py video.mp4 -g true
+
+# OpenAI GPT-4モデルを使用
+python main.py input.txt -s openai -m gpt-4
+
+# ローカルLLMを使用
+python main.py input.txt -s local_llm
+
+# Whisperモデルサイズを変更
+python main.py audio.mp3 -w medium
+```
+
+### ヘルプ
+```bash
+python main.py --help
+```
+
 ## 主な処理フロー
 
 1. **入力取得**
@@ -31,10 +100,10 @@
 - ログファイルはサイズや世代で自動ローテーション
 
 ## 今後の実装予定
-- GPU対応Whisperによる動画文字起こし
-- 入力種別の自動判別
-- LLM等によるMarkdown要約
-- CLIやWeb UIの追加
+- 要約テンプレートのカスタマイズ
+- Web UIの追加
+- より多様な入力形式のサポート
+- 複数言語対応の強化
 
 ---
 
