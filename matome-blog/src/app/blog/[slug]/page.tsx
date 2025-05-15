@@ -2,13 +2,16 @@ import { TableOfContents } from "@/components/blog/TableOfContents";
 import { RelatedPosts } from "@/components/blog/RelatedPosts";
 import { ShareButton } from "@/components/blog/ShareButton";
 import { prisma } from "@/lib/db/prisma";
-import { PostWithReadingTime } from "@/lib/db/types";
 import { parseMDX, extractHeadings } from "@/lib/mdx";
 import { notFound } from "next/navigation";
 import fs from "fs/promises";
 import path from "path";
 import MarkdownBody from "@/components/blog/MarkdownBody";
 import { type Post, type Tag } from "@prisma/client";
+import { Metadata } from "next";
+import { JsonLd } from "@/components/blog/JsonLd";
+import { PostWithReadingTime } from "@/lib/db/types";
+import { Breadcrumb } from "@/components/blog/Breadcrumb";
 
 interface PageProps {
   params: {
@@ -16,10 +19,59 @@ interface PageProps {
   };
 }
 
-// Prismaの型が更新されていない場合に使用するための拡張型
-interface PostWithReadingTime extends Post {
-  readingTimeMinutes?: number | null;
-  tags: Tag[];
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = params;
+  const post = await prisma.post.findUnique({
+    where: { slug },
+    include: {
+      tags: true,
+    },
+  });
+
+  if (!post) {
+    return {
+      title: "記事が見つかりません | YouTube Summary Blog",
+      description: "指定された記事は存在しません。",
+    };
+  }
+  // Base URL for canonical URL and OG images
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.excerpt || '')}`;
+
+  return {
+    title: `${post.title} | YouTube Summary Blog`,
+    description: post.excerpt || `${post.title}の要約記事です。`,
+    authors: [{ name: "YouTube Summary Blog" }],
+    keywords: post.tags.map(tag => tag.name),
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || `${post.title}の要約記事です。`,
+      type: "article",
+      url: `${baseUrl}/blog/${post.slug}`,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      publishedTime: post.publishedAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      tags: post.tags.map(tag => tag.name),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt || `${post.title}の要約記事です。`,
+      images: [ogImageUrl],
+    },
+    alternates: {
+      canonical: `${baseUrl}/blog/${post.slug}`,
+    },
+  };
 }
 
 export async function generateStaticParams() {
@@ -76,6 +128,75 @@ export default async function BlogPost({ params }: PageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": post.title,
+          "description": post.excerpt || `${post.title}の要約記事です。`,
+          "image": `https://img.youtube.com/vi/${post.videoId}/maxresdefault.jpg`,
+          "datePublished": post.publishedAt.toISOString(),
+          "dateModified": post.updatedAt.toISOString(),
+          "author": {
+            "@type": "Organization",
+            "name": "YouTube Summary Blog",
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "YouTube Summary Blog",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://matome-blog.vercel.app/logo.png", // Make sure this logo exists
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://matome-blog.vercel.app/blog/${post.slug}`,
+          },
+          "video": {
+            "@type": "VideoObject",
+            "name": post.title,
+            "description": post.excerpt || post.title,
+            "thumbnailUrl": `https://img.youtube.com/vi/${post.videoId}/maxresdefault.jpg`,
+            "uploadDate": post.publishedAt.toISOString(),
+            "embedUrl": `https://www.youtube.com/embed/${post.videoId}`,
+            "contentUrl": `https://www.youtube.com/watch?v=${post.videoId}`,
+          },
+          "keywords": post.tags.map(tag => tag.name).join(","),
+          "wordCount": source.split(/\s+/).length,
+          "timeRequired": `PT${post.readingTimeMinutes || 5}M`,
+          "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "ホーム",
+                "item": "https://matome-blog.vercel.app/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "ブログ記事",
+                "item": "https://matome-blog.vercel.app/blog"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": post.title,
+                "item": `https://matome-blog.vercel.app/blog/${post.slug}`
+              }
+            ]
+          }
+        }}
+      />
+      <Breadcrumb 
+        items={[
+          { label: "ホーム", href: "/" },
+          { label: "ブログ記事", href: "/blog" },
+          { label: post.title, href: `/blog/${post.slug}`, active: true }
+        ]} 
+      />
       <article className="max-w-4xl mx-auto">
         <header className="mb-8">
           <h1 className="text-4xl font-bold mb-4">{post.title}</h1>

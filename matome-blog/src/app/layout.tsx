@@ -12,8 +12,47 @@ const mplus1p = M_PLUS_1p({
 });
 
 export const metadata: Metadata = {
-  title: "YouTube Summary Blog",
+  title: {
+    default: "YouTube Summary Blog",
+    template: "%s | YouTube Summary Blog",
+  },
   description: "YouTube動画のサマリーブログプラットフォーム",
+  keywords: ["YouTube", "サマリー", "要約", "ブログ"],
+  authors: [
+    {
+      name: "YouTube Summary Blog",
+    },
+  ],
+  creator: "YouTube Summary Blog",
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://example.com",
+    title: "YouTube Summary Blog",
+    description: "YouTube動画のサマリーブログプラットフォーム",
+    siteName: "YouTube Summary Blog",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "YouTube Summary Blog",
+    description: "YouTube動画のサマリーブログプラットフォーム",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://example.com"),
 };
 
 export default function RootLayout({
