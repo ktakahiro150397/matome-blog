@@ -12,6 +12,18 @@ async function syncContent() {
     const postsDir = path.join(process.cwd(), "content", "posts");
     const files = await fs.readdir(postsDir);
     const mdxFiles = files.filter((file) => file.endsWith(".mdx"));
+    const mdxSlugs = mdxFiles.map((file) => file.replace(/\.mdx$/, ""));
+
+    // DB内の全postのslugを取得
+    const dbPosts = await prisma.post.findMany({ select: { slug: true } });
+    const dbSlugs = dbPosts.map((post) => post.slug);
+
+    // フォルダに存在しないslugのpostを削除
+    const slugsToDelete = dbSlugs.filter((slug) => !mdxSlugs.includes(slug));
+    if (slugsToDelete.length > 0) {
+      await prisma.post.deleteMany({ where: { slug: { in: slugsToDelete } } });
+      console.log(`Deleted posts: ${slugsToDelete.join(", ")}`);
+    }
 
     for (const file of mdxFiles) {
       const filePath = path.join(postsDir, file);
