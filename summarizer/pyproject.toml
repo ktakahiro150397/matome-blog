@@ -1,0 +1,14 @@
+[project]
+name = "summarizer"
+version = "0.1.0"
+description = "テキストまたはYouTube動画を要約するツール"
+requires-python = ">=3.9"
+dependencies = [
+    "langchain>=0.1.0",
+    "langchain-openai>=0.3.17",
+    "openai>=1.0.0",
+    "python-dotenv>=1.1.0",
+]
+
+[tool.uv]
+# uv用の設定があればここに記載
