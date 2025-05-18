@@ -55,3 +55,31 @@ def summarize_text(text: str) -> str:
 
     logger.info(f"summarize_text called. text length: {len(text)}")
     return _summarize(text, logger, PROMPT_TEMPLATE)
+
+
+def extract_tags(text: str, logger, max_tags: int = 3) -> list:
+    """
+    本文からトピックとしてふさわしいタグを抽出（日本語、カンマ区切りで返す）
+    """
+    TAG_PROMPT = f"""
+    次のテキストから、内容をよく表す日本語の単語やフレーズを{max_tags}個まで抽出し、カンマ区切りで出力してください。タグは短く簡潔に。
+    ---
+    {{text}}
+    ---
+    """
+    tags_str = _summarize(text, logger, TAG_PROMPT)
+    tags = [t.strip() for t in tags_str.split(",") if t.strip()]
+    return tags[:max_tags]
+
+
+def generate_excerpt(text: str, logger) -> str:
+    """
+    本文から読者の目を引くキャッチーな1文を生成
+    """
+    EXCERPT_PROMPT = """
+    次のテキストの内容を要約し、読者の興味を引く日本語のキャッチコピーやリード文を1文だけ出力してください。
+    ---
+    {text}
+    ---
+    """
+    return _summarize(text, logger, EXCERPT_PROMPT)

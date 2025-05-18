@@ -1,8 +1,16 @@
 import argparse
 import os
 import sys
-from summarizer.text_summarizer import summarize_text, summarize_text_file
+import datetime
+from summarizer.text_summarizer import (
+    summarize_text,
+    summarize_text_file,
+    extract_tags,
+    generate_excerpt,
+)
 from summarizer.youtube_summarizer import summarize_youtube_url, logger
+from summarizer.youtube_utils import fetch_youtube_title, extract_video_id
+import yaml
 
 
 def is_youtube_url(input_str: str) -> bool:
@@ -39,17 +47,41 @@ def main():
             )
             result = summarize_text(raw_text)
             logger.info(
-                "YouTube動画の要約が完了しました。ファイル出力処理を開始します..."
+                "YouTube動画の要約が完了しました。frontmatter生成を開始します..."
             )
             # ファイル名生成
-            import datetime
+            video_id = extract_video_id(args.input)
+            base = f"youtube_{video_id}"
+            output_path = os.path.join(args.output_dir, base + ".mdx")
+            temp_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "temp"))
+            os.makedirs(temp_dir, exist_ok=True)
+            raw_path = os.path.join(temp_dir, base + "_raw.txt")
 
-            ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            base = f"youtube_{ts}"
-            output_path = os.path.join(args.output_dir, base + "_summary.txt")
-            raw_path = os.path.join(args.output_dir, base + "_raw.txt")
+            # frontmatter自動生成
+            title = fetch_youtube_title(args.input)
+            tags = extract_tags(result, logger, max_tags=3)
+            excerpt = generate_excerpt(result, logger)
+            published_at = datetime.datetime.now().isoformat()
+            frontmatter = {
+                "title": title,
+                "excerpt": excerpt,
+                "videoId": video_id,
+                "videoUrl": args.input,
+                "publishedAt": published_at,
+                "tags": tags,
+            }
+            yaml_frontmatter = yaml.dump(
+                frontmatter, allow_unicode=True, sort_keys=False
+            )
+            # resultから不要なコードブロック記法を除去
+            cleaned_result = result.strip()
+            if cleaned_result.startswith("```markdown"):
+                cleaned_result = cleaned_result[len("```markdown") :].lstrip("\n")
+            if cleaned_result.endswith("```"):
+                cleaned_result = cleaned_result[:-3].rstrip("\n")
+            markdown = f"---\n{yaml_frontmatter}---\n\n{cleaned_result}\n"
             with open(output_path, "w", encoding="utf-8") as f:
-                f.write(result)
+                f.write(markdown)
             with open(raw_path, "w", encoding="utf-8") as f:
                 f.write(raw_text)
             logger.info(f"Summary written to: {output_path}")
