@@ -7,7 +7,9 @@ dependencies = [
     "langchain>=0.1.0",
     "langchain-openai>=0.3.17",
     "openai>=1.0.0",
+    "openai-whisper>=20240930",
     "python-dotenv>=1.1.0",
+    "yt-dlp>=2025.4.30",
 ]
 
 [tool.uv]
